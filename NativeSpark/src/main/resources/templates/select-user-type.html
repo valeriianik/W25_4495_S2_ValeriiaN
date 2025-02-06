@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to NativeSpark</title>
+    <title>Select User Type - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -19,11 +19,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
         .footer-custom {
             background-color: rgba(1, 25, 13, 0.9);
             color: white;
@@ -31,6 +26,8 @@
             padding: 1rem 0;
             border-top: 2px solid #014017;
             font-size: 0.9rem;
+            text-align: center;
+            margin-top: auto;
         }
 
         .content {
@@ -38,46 +35,44 @@
             padding-top: 20px;
         }
 
-        .card-img-top {
-            width: 100%;
-            height: 150px; /* Fixed height for consistent card appearance */
-            object-fit: cover; /* Ensures the image covers the entire area without distortion */
-            border-top-left-radius: calc(0.25rem - 1px);
-            border-top-right-radius: calc(0.25rem - 1px);
-        }
-
-        .card-title {
-            margin-top: 1rem; /* Add margin between image and title */
-        }
-
-        .card-text {
-            margin-top: 0.5rem; /* Add margin between title and text */
-        }
-
-        .card {
+        .form-container {
+            background: #fff;
+            padding: 2rem;
             border-radius: 10px;
+            margin-bottom: 1rem;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            text-align: center;
         }
 
-        .card:hover {
+        .form-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .btn-primary {
+        .btn-success {
             background-color: #014017;
             border-color: #014017;
             transition: background-color 0.3s, color 0.3s;
+            width: 100%;
+            margin-top: 10px;
         }
 
-        .btn-primary:hover {
+        .btn-success:hover {
             background-color: #02371e;
             border-color: #02371e;
         }
+
+        .btn-secondary {
+            width: 100%;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
+
+<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container px-5">
         <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
@@ -107,52 +102,46 @@
     </div>
 </nav>
 
+<!-- ✅ Main Content -->
 <div class="container px-4 px-lg-5 content">
-    <div class="row gx-4 gx-lg-5 align-items-center my-5">
-        <div class="col-lg-7">
-            <img class="img-fluid rounded mb-4 mb-lg-0" src="/images/spark.png" alt="Welcome Image">
-        </div>
-        <div class="col-lg-5">
-            <h1 class="font-weight-light">Welcome to NativeSpark</h1>
-            <p>NativeSpark connects Indigenous companies and entrepreneurs with specialized resources and support. Discover opportunities for economic growth and cultural preservation.</p>
-        </div>
-    </div>
-    <div class="row gx-4 gx-lg-5">
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/connection2.png" class="card-img-top" alt="Connect with Opportunities">
-                <div class="card-body">
-                    <h2 class="card-title">Connect with Opportunities</h2>
-                    <p class="card-text">Browse job offers, post your skills, and showcase your products to a broader market.</p>
-                </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6 form-container">
+            <h2 class="mb-4">Select Your User Type</h2>
+
+            <!-- Business User Block -->
+            <div class="form-container">
+                <h3>Business</h3>
+                <p>For companies looking to connect and grow.</p>
+                <a th:href="@{/register/business}" class="btn btn-success">Register as Business</a>
             </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/posts2.png" class="card-img-top" alt="Business Listings">
-                <div class="card-body">
-                    <h2 class="card-title">Business Listings</h2>
-                    <p class="card-text">Post short-term projects or long-term partnerships. Specify your needs and find the right fit for your business.</p>
-                </div>
+
+            <!-- Indigenous Entrepreneur Block -->
+            <div class="form-container">
+                <h3>Indigenous Entrepreneur</h3>
+                <p>For Indigenous Entrepreneurs to showcase the work and skills.</p>
+                <a th:href="@{/register/entrepreneur}" class="btn btn-success">Register as Entrepreneur</a>
             </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/partner2.png" class="card-img-top" alt="Support and Community">
-                <div class="card-body">
-                    <h2 class="card-title">Support and Community</h2>
-                    <p class="card-text">Access resources, mentoring, and support to grow your business. Join a vibrant community focused on economic empowerment and cultural preservation.</p>
-                </div>
+
+            <!-- Basic User Block -->
+            <div class="form-container">
+                <h3>Basic User</h3>
+                <p>For browsing and exploring NativeSpark.</p>
+                <a th:href="@{/register/basic}" class="btn btn-success">Register as Basic User</a>
             </div>
+
+            <!-- ✅ Go Back Button -->
+            <a th:href="@{/login}" class="btn btn-secondary">Go Back</a>
         </div>
     </div>
 </div>
 
+<!-- ✅ Footer -->
 <footer class="py-3 footer-custom">
     <div class="container px-4 px-lg-5">
-        <p class="m-0 text-center">Copyright &copy; NativeSpark 2025</p>
+        <p class="m-0">Copyright &copy; NativeSpark 2025</p>
     </div>
 </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

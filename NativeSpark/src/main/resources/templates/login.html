@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to NativeSpark</title>
+    <title>Login - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -38,42 +38,43 @@
             padding-top: 20px;
         }
 
-        .card-img-top {
-            width: 100%;
-            height: 150px; /* Fixed height for consistent card appearance */
-            object-fit: cover; /* Ensures the image covers the entire area without distortion */
-            border-top-left-radius: calc(0.25rem - 1px);
-            border-top-right-radius: calc(0.25rem - 1px);
-        }
-
-        .card-title {
-            margin-top: 1rem; /* Add margin between image and title */
-        }
-
-        .card-text {
-            margin-top: 0.5rem; /* Add margin between title and text */
-        }
-
-        .card {
+        .form-container {
+            background: #fff;
+            padding: 2rem;
             border-radius: 10px;
+            margin-bottom: 1rem;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
 
-        .card:hover {
+        .form-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .btn-primary {
+        .btn-success {
             background-color: #014017;
             border-color: #014017;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .btn-primary:hover {
+        .btn-success:hover {
             background-color: #02371e;
             border-color: #02371e;
+        }
+
+        .alert {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .text-center a {
+            color: #014017;
+            transition: color 0.3s;
+        }
+
+        .text-center a:hover {
+            color: #02371e;
         }
     </style>
 </head>
@@ -108,42 +109,27 @@
 </nav>
 
 <div class="container px-4 px-lg-5 content">
-    <div class="row gx-4 gx-lg-5 align-items-center my-5">
-        <div class="col-lg-7">
-            <img class="img-fluid rounded mb-4 mb-lg-0" src="/images/spark.png" alt="Welcome Image">
-        </div>
-        <div class="col-lg-5">
-            <h1 class="font-weight-light">Welcome to NativeSpark</h1>
-            <p>NativeSpark connects Indigenous companies and entrepreneurs with specialized resources and support. Discover opportunities for economic growth and cultural preservation.</p>
-        </div>
-    </div>
-    <div class="row gx-4 gx-lg-5">
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/connection2.png" class="card-img-top" alt="Connect with Opportunities">
-                <div class="card-body">
-                    <h2 class="card-title">Connect with Opportunities</h2>
-                    <p class="card-text">Browse job offers, post your skills, and showcase your products to a broader market.</p>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6 form-container">
+            <h2 class="mb-4 text-center">Login</h2>
+            <form th:action="@{/login}" method="post" th:object="${user}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="username" required>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/posts2.png" class="card-img-top" alt="Business Listings">
-                <div class="card-body">
-                    <h2 class="card-title">Business Listings</h2>
-                    <p class="card-text">Post short-term projects or long-term partnerships. Specify your needs and find the right fit for your business.</p>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <img src="/images/partner2.png" class="card-img-top" alt="Support and Community">
-                <div class="card-body">
-                    <h2 class="card-title">Support and Community</h2>
-                    <p class="card-text">Access resources, mentoring, and support to grow your business. Join a vibrant community focused on economic empowerment and cultural preservation.</p>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Login</button>
                 </div>
-            </div>
+                <div th:if="${param.error}" class="mt-3 alert alert-danger">Invalid username or password.</div>
+                <div class="mt-3 text-center">
+                    <a th:href="@{/select-user-type}">Don't have an account? Sign up here</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
