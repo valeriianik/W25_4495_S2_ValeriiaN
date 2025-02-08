@@ -112,21 +112,33 @@
             <div class="form-container">
                 <h3>Business</h3>
                 <p>For companies looking to connect and grow.</p>
-                <a th:href="@{/register/business}" class="btn btn-success">Register as Business</a>
+<!--                <a th:href="@{/register/business}" class="btn btn-success">Register as Business</a>-->
+                <form method="post" th:action="@{/register/user-type}">
+                    <input type="hidden" name="userType" value="BUSINESS">
+                    <button type="submit" class="btn btn-success">Register as Business</button>
+                </form>
             </div>
 
             <!-- Indigenous Entrepreneur Block -->
             <div class="form-container">
                 <h3>Indigenous Entrepreneur</h3>
                 <p>For Indigenous Entrepreneurs to showcase the work and skills.</p>
-                <a th:href="@{/register/entrepreneur}" class="btn btn-success">Register as Entrepreneur</a>
+<!--                <a th:href="@{/register/entrepreneur}" class="btn btn-success">Register as Entrepreneur</a>-->
+                <form method="post" th:action="@{/register/user-type}">
+                    <input type="hidden" name="userType" value="ENTREPRENEUR">
+                    <button type="submit" class="btn btn-success">Register as Indigenous Entrepreneur</button>
+                </form>
             </div>
 
             <!-- Basic User Block -->
             <div class="form-container">
                 <h3>Basic User</h3>
                 <p>For browsing and exploring NativeSpark.</p>
-                <a th:href="@{/register/basic}" class="btn btn-success">Register as Basic User</a>
+<!--                <a th:href="@{/register/basic}" class="btn btn-success">Register as Basic User</a>-->
+                <form method="post" th:action="@{/register/user-type}">
+                    <input type="hidden" name="userType" value="BASIC">
+                    <button type="submit" class="btn btn-success">Register as Basic User</button>
+                </form>
             </div>
 
             <!-- ✅ Go Back Button -->
