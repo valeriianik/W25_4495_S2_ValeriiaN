@@ -10,38 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
 public class BusinessUserService {
-
-//    private final BusinessUserRepository businessUserRepository;
-//
-//    @Autowired
-//    public BusinessUserService(BusinessUserRepository businessUserRepository) {
-//        this.businessUserRepository = businessUserRepository;
-//    }
-//
-//    public BusinessUser registerBusinessUser(User user, String businessName, String description, MultipartFile logo) throws IOException {
-//        // ✅ Handle file upload
-//        String uploadDir = "uploads/logos/";
-//        String fileName = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
-//        Path filePath = Paths.get(uploadDir + fileName);
-//
-//        File directory = new File(uploadDir);
-//        if (!directory.exists()) {
-//            directory.mkdirs();
-//        }
-//        logo.transferTo(new File(filePath.toString()));
-//
-//        // ✅ Save Business User in Database
-//        BusinessUser businessUser = new BusinessUser(user, businessName, description, filePath.toString());
-//        businessUser = businessUserRepository.save(businessUser);
-//
-//        System.out.println("✅ Business User Saved: " + businessUser);
-//        return businessUser;
-//    }
 
     private final BusinessUserRepository businessUserRepository;
 
@@ -50,24 +24,24 @@ public class BusinessUserService {
         this.businessUserRepository = businessUserRepository;
     }
 
-    @Transactional  // ✅ Ensures all database operations complete successfully
+    @Transactional
     public BusinessUser registerBusinessUser(User user, String businessName, String description, MultipartFile logo) throws IOException {
-        // ✅ Handle file upload
         String uploadDir = "uploads/logos/";
-        String fileName = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir + fileName);
-
         File directory = new File(uploadDir);
+
         if (!directory.exists()) {
-            directory.mkdirs();
+            boolean created = directory.mkdirs();
+            if (!created) {
+                throw new IOException("Could not create upload directory: " + uploadDir);
+            }
         }
-        logo.transferTo(filePath.toFile());
 
-        // ✅ Save Business User in Database
+        String fileName = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir, fileName);
+
+        Files.copy(logo.getInputStream(), filePath);
+
         BusinessUser businessUser = new BusinessUser(user, businessName, description, filePath.toString());
-        businessUser = businessUserRepository.save(businessUser);
-
-        System.out.println("✅ Business User Saved: " + businessUser);
-        return businessUser;
+        return businessUserRepository.save(businessUser);
     }
 }

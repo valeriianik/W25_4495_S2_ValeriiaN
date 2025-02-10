@@ -45,28 +45,8 @@ public class BusinessUserController {
 
     @GetMapping("/info")
     public String showBusinessInfoForm() {
-        return "business-info"; // ✅ Ensure this matches the Thymeleaf template name
+        return "business-info"; //
     }
-
-//    @PostMapping("/step2")
-//    public String registerBusinessUserStep2(
-//            @RequestParam String businessName,
-//            @RequestParam String description,
-//            @RequestParam("logo") MultipartFile logo,
-//            HttpSession session) throws IOException {
-//
-//        User registeredUser = (User) session.getAttribute("registeredUser");
-//        if (registeredUser == null) {
-//            return "redirect:/register/business";
-//        }
-//
-//        // ✅ Save Business User in Database
-//        BusinessUser businessUser = businessUserService.registerBusinessUser(registeredUser, businessName, description, logo);
-//
-//        System.out.println("✅ Business User Registered: " + businessUser);
-//
-//        session.removeAttribute("registeredUser");
-//        return "redirect:/login?success=business_registered";
 
     @PostMapping("/step2")
     public String registerBusinessUserStep2(
@@ -84,7 +64,6 @@ public class BusinessUserController {
 
         System.out.println("✅ User Found in Session: " + registeredUser.getEmail());
 
-        // ✅ Save BusinessUser
         BusinessUser businessUser = businessUserService.registerBusinessUser(registeredUser, businessName, description, logo);
 
         System.out.println("✅ Business User Registered: " + businessUser);
@@ -92,6 +71,5 @@ public class BusinessUserController {
         session.removeAttribute("registeredUser");
         return "redirect:/login?success=business_registered";
     }
-
 }
 

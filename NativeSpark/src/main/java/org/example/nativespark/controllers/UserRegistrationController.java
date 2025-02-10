@@ -1,7 +1,5 @@
 package org.example.nativespark.controllers;
 
-//import com.example.nativespark.entities.User;
-//import com.example.nativespark.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +21,20 @@ public class UserRegistrationController {
         if ("BUSINESS".equals(userType)) {
             return "redirect:/register/business";
         }
+        else if ("ENTREPRENEUR".equals(userType)) {
+            return "redirect:/register/entrepreneur";
+        }
         return "redirect:/register/basic";
     }
 
     @GetMapping("/register/business")
     public String showBusinessRegistrationForm() {
-        return "business-register"; // ✅ Ensure this matches the Thymeleaf file name
+        return "business-register"; //
+    }
+
+    @GetMapping("/register/entrepreneur")
+    public String showEntrepreneurRegistrationForm() {
+        return "entrepreneur-register"; //
     }
 
 //    @GetMapping("/register/entrepreneur")

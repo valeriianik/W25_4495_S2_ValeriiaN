@@ -108,11 +108,9 @@
         <div class="col-lg-6 form-container">
             <h2 class="mb-4">Select Your User Type</h2>
 
-            <!-- Business User Block -->
             <div class="form-container">
                 <h3>Business</h3>
                 <p>For companies looking to connect and grow.</p>
-<!--                <a th:href="@{/register/business}" class="btn btn-success">Register as Business</a>-->
                 <form method="post" th:action="@{/register/user-type}">
                     <input type="hidden" name="userType" value="BUSINESS">
                     <button type="submit" class="btn btn-success">Register as Business</button>
@@ -123,7 +121,6 @@
             <div class="form-container">
                 <h3>Indigenous Entrepreneur</h3>
                 <p>For Indigenous Entrepreneurs to showcase the work and skills.</p>
-<!--                <a th:href="@{/register/entrepreneur}" class="btn btn-success">Register as Entrepreneur</a>-->
                 <form method="post" th:action="@{/register/user-type}">
                     <input type="hidden" name="userType" value="ENTREPRENEUR">
                     <button type="submit" class="btn btn-success">Register as Indigenous Entrepreneur</button>
