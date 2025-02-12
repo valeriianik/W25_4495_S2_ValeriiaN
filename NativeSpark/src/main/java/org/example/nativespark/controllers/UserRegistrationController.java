@@ -11,7 +11,7 @@ public class UserRegistrationController {
 
     @GetMapping("/select-user-type")
     public String showUserTypeSelectionPage() {
-        return "select-user-type"; // Displays the user type selection page
+        return "select-user-type";
     }
 
     @PostMapping("/register/user-type")
@@ -23,7 +23,10 @@ public class UserRegistrationController {
         }
         else if ("ENTREPRENEUR".equals(userType)) {
             return "redirect:/register/entrepreneur";
+        } else if ("BASIC".equals(userType)){
+            return "redirect:/register/basic";
         }
+
         return "redirect:/register/basic";
     }
 
@@ -35,6 +38,11 @@ public class UserRegistrationController {
     @GetMapping("/register/entrepreneur")
     public String showEntrepreneurRegistrationForm() {
         return "entrepreneur-register"; //
+    }
+
+    @GetMapping("/register/basic")
+    public String showBasicRegistrationForm() {
+        return "basic-register"; //
     }
 
 //    @GetMapping("/register/entrepreneur")

@@ -22,6 +22,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
+
         return "login";
     }
 
