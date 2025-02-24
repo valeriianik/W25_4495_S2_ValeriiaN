@@ -36,7 +36,6 @@ public class BusinessUserController {
             return "redirect:/register/business?error=password_mismatch";
         }
 
-        // ✅ Save the user in the database
         User user = userService.createUser(email, password, "BUSINESS");
         session.setAttribute("registeredUser", user);
 

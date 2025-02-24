@@ -44,31 +44,6 @@ public class UserRegistrationController {
     public String showBasicRegistrationForm() {
         return "basic-register"; //
     }
-
-//    @GetMapping("/register/entrepreneur")
-//    public String showEntrepreneurRegistrationForm() {
-//        return "entrepreneur-register"; // Renders entrepreneur registration form
-//    }
-//
-//    @GetMapping("/register/basic")
-//    public String showBasicUserRegistrationForm() {
-//        return "basic-register"; // Renders basic user registration form
-//    }
-
-//    @Autowired
-//    private UserService userService;
-//
-//    @GetMapping("/register")
-//    public String showRegistrationForm(Model model) {
-//        model.addAttribute("user", new User());
-//        return "register";
-//    }
-//
-//    @PostMapping("/register")
-//    public String registerUser(@ModelAttribute User user) {
-//        User registeredUser = userService.registerUser(user);
-//        return "redirect:/subscription?userId=" + registeredUser.getUserId() + "&userType=" + registeredUser.getUserType();
-//    }
 }
 
 
