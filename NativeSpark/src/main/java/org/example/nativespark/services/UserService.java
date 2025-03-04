@@ -1,6 +1,9 @@
 package org.example.nativespark.services;
 
 import org.example.nativespark.entities.User;
+import org.example.nativespark.repositories.BasicUserRepository;
+import org.example.nativespark.repositories.BusinessUserRepository;
+import org.example.nativespark.repositories.EntrepreneurUserRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,15 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BasicUserRepository basicUserRepository;
+
+    @Autowired
+    private BusinessUserRepository businessUserRepository;
+
+    @Autowired
+    private EntrepreneurUserRepository entrepreneurUserRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {

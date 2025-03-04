@@ -1,15 +1,14 @@
 package org.example.nativespark.controllers;
 
-import org.example.nativespark.entities.User;
-import org.example.nativespark.repositories.UserRepository;
+import org.example.nativespark.entities.*;
+import org.example.nativespark.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-
 
 import java.util.Optional;
 
@@ -20,11 +19,18 @@ public class AccountController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EntrepreneurUserRepository entrepreneurUserRepository;
+
+    @Autowired
+    private BusinessUserRepository businessUserRepository;
+
+    @Autowired
+    private BasicUserRepository basicUserRepository;
+
     @GetMapping
     public String showAccountPage(Model model) {
-        org.springframework.security.core.Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             System.out.println("❌ No authenticated user found, redirecting to login.");
             return "redirect:/login";
@@ -40,8 +46,48 @@ public class AccountController {
 
         User user = userOptional.get();
         model.addAttribute("user", user);
-        System.out.println("✅ User session loaded successfully: " + user.getEmail());
+        System.out.println("✅ Logged-in User Type: " + user.getUserType());
+
+        // Load user-specific details
+        switch (user.getUserType().toLowerCase()) {
+            case "entrepreneur":
+                Optional<EntrepreneurUser> entrepreneurUser = entrepreneurUserRepository.findByUser(user);
+                if (entrepreneurUser.isPresent()) {
+                    model.addAttribute("entrepreneur", entrepreneurUser.get());
+                    System.out.println("✅ Entrepreneur User loaded: " + entrepreneurUser.get().getFirstName());
+                } else {
+                    System.out.println("❌ Entrepreneur User NOT FOUND for user: " + email);
+                }
+                break;
+
+            case "business":
+                Optional<BusinessUser> businessUser = businessUserRepository.findByUser(user);
+                if (businessUser.isPresent()) {
+                    model.addAttribute("business", businessUser.get());
+                    System.out.println("✅ Business User loaded: " + businessUser.get().getBusinessName());
+                } else {
+                    System.out.println("❌ Business User NOT FOUND for user: " + email);
+                }
+                break;
+
+            case "basic":
+                Optional<BasicUser> basicUser = basicUserRepository.findByUser(user);
+                if (basicUser.isPresent()) {
+                    model.addAttribute("basic", basicUser.get());
+                    System.out.println("✅ Basic User loaded: " + basicUser.get().getFirstName());
+                } else {
+                    System.out.println("❌ Basic User NOT FOUND for user: " + email);
+                }
+                break;
+
+            default:
+                System.out.println("❌ Unknown user type: " + user.getUserType());
+        }
 
         return "account";
     }
 }
+
+
+
+
