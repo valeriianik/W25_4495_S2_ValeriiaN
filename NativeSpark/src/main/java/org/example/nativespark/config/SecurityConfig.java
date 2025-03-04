@@ -27,36 +27,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/about", "/login", "/register/**", "/select-user-type", "/register", "/subscription", "/account", "/listing_create", "/listing_edit", "/purchase", "/placeOrder", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/account").authenticated() // ✅ Ensure `/account` is protected
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
+                        .loginProcessingUrl("/login")  // ✅ Ensures login processing works
+                        .defaultSuccessUrl("/account", true) // ✅ Redirects to `/account` after login
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
                         .permitAll()
                 )
-
-//                .formLogin((form) -> form
-//                        .loginPage("/login")
-//                        .defaultSuccessUrl("/account", true)
-//                        .permitAll()
-//                )
-//                .csrf(csrf -> csrf
-//                        .ignoringRequestMatchers("/listing/**")
-//                )
-//                .logout((logout) -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/")
-//                        .permitAll()
-//                        .invalidateHttpSession(true)
-//                )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // ✅ Ensures session is created
+                )
                 .userDetailsService(userService);
 
         return http.build();

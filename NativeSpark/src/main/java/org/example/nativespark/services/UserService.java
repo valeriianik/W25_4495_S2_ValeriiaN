@@ -15,13 +15,12 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(String email, String password, String userType) {
@@ -29,8 +28,7 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Email is already in use.");
         }
 
-        User user = new User(email, password, userType);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User(email, passwordEncoder.encode(password), userType);
         return userRepository.save(user);
     }
 
@@ -46,12 +44,26 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getUserType()) // Assign roles based on user type
+                .roles(user.getUserType())
                 .build();
     }
 
-//    public Optional<User> findByEmail(String email) {
-//        return userRepository.findByEmail(email);
-//    }
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
+    public boolean authenticateUser(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return passwordEncoder.matches(password, user.getPassword()); // Use matches()
+        }
+        return false;
+    }
+
+    public boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 }
+
+

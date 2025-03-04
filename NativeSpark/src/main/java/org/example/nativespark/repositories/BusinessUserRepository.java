@@ -1,9 +1,11 @@
 package org.example.nativespark.repositories;
 
 import org.example.nativespark.entities.BusinessUser;
+import org.example.nativespark.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
 public interface BusinessUserRepository extends JpaRepository<BusinessUser, Long> {
+    Optional<BusinessUser> findByUser(User user);
+
 }
