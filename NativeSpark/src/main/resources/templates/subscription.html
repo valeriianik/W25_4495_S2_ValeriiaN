@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscription - NativeSpark</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             display: flex;
@@ -25,244 +27,207 @@
         }
 
         .footer-custom {
-            background-color: rgba(1, 25, 13, 0.9);
+            background-color: #014017;
             color: white;
-            width: 100%;
-            padding: 1rem 0;
-            border-top: 2px solid #014017;
-            font-size: 0.9rem;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1rem;
         }
-
-        .content {
-            flex: 1;
-            padding-top: 20px;
-        }
-
-        .form-container {
-            background: #fff;
-            padding: 2rem;
+        .subscription-box {
+            background-color: #fff;
             border-radius: 10px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 40px;
         }
-
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .subscription-card {
-            margin-bottom: 1rem;
-            border: 1px solid #ced4da;
+        .subscription-option {
+            padding: 15px;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            border: 2px solid transparent;
+            background-color: #f8f9fa;
         }
-
-        .subscription-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .subscription-option:hover, .selected {
+            border: 2px solid #014017;
+            background-color: #e6f2eb;
         }
-
-        .selected-card {
-            border: 2px solid #28a745;
-            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.5);
-        }
-
-        .disabled-card {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .payment-info {
-            margin-top: 1rem;
-        }
-
-        .btn-success {
-            background-color: #014017;
-            border-color: #014017;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .btn-success:hover {
-            background-color: #02371e;
-            border-color: #02371e;
-        }
-
-        .form-label {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .text-danger {
-            font-size: 0.9rem;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-<!--<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">-->
-<!--    <div class="container px-5">-->
-<!--        <a class="navbar-brand" th:href="@{/}">NativeSpark</a>-->
-<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"-->
-<!--                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--            <span class="navbar-toggler-icon"></span>-->
-<!--        </button>-->
-<!--        <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
-<!--            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">-->
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/about}">About Us</a>-->
-<!--                </li>-->
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/}">Home</a>-->
-<!--                </li>-->
-<!--                <li class="nav-item" sec:authorize="isAuthenticated()">-->
-<!--                    <a class="nav-link" th:href="@{/account}">My Account</a>-->
-<!--                </li>-->
-<!--                <li class="nav-item" sec:authorize="!isAuthenticated()">-->
-<!--                    <a class="nav-link" th:href="@{/login}">Login</a>-->
-<!--                </li>-->
-<!--                <li class="nav-item" sec:authorize="isAuthenticated()">-->
-<!--                    <a class="nav-link" th:href="@{/logout}">Logout</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</nav>-->
 
-<div class="container px-4 px-lg-5 content">
-    <div class="row justify-content-center my-5">
-        <div class="col-lg-8 form-container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="mb-4 text-center">Choose Your Subscription</h2>
-                </div>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/account}">My Account</a></li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
+                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li> <!-- Placeholder for future features -->
+                    </ul>
+                </li>
+
+                <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Login</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container content">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="subscription-box p-4">
+                <h3>Manage Your Subscription</h3>
+                <p><strong>Current Subscription:</strong> <span id="currentSubscription" th:text="${subscription.subscriptionType}"></span></p>
+
+                <form id="subscriptionForm" th:action="@{/update-subscription}" method="post" onsubmit="confirmSubscription(event)">
+                    <input type="hidden" name="subscriptionType" id="selectedSubscription" value="">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/> <!-- ✅ CSRF Token -->
+
+                    <div class="row mt-4">
+                        <div class="col-4">
+                            <div class="subscription-option" id="freeOption" onclick="selectSubscription('Free')">
+                                <h5>Free</h5>
+                                <p>$0 / month</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="subscription-option" id="basicOption" onclick="selectSubscription('Basic')">
+                                <h5>Basic</h5>
+                                <p>$9.99 / month</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="subscription-option" id="premiumOption" onclick="selectSubscription('Premium')">
+                                <h5>Premium</h5>
+                                <p>$19.99 / month</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="paymentSection" class="hidden mt-3">
+                        <h4>Payment Details</h4>
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expiryDate" class="form-label">Expiry Date</label>
+                            <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY">
+                        </div>
+                        <div class="mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success mt-3">Save Subscription</button>
+                </form>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <div class="card subscription-card" id="freeCard" onclick="selectSubscription('Free')">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Free</h5>
-                            <p class="card-text">Limited features</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card subscription-card" id="basicCard" onclick="selectSubscription('Basic')">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Basic</h5>
-                            <p class="card-text">CAD 79 per month</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card subscription-card" id="premiumCard" onclick="selectSubscription('Premium')">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Premium</h5>
-                            <p class="card-text" id="premiumText">CAD 139 per month</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <form class="mt-5" id="paymentForm" th:action="@{/subscription}" method="post" onsubmit="return validateForm()">
-                <input type="hidden" id="userId" name="userId" th:value="${userId}">
-                <input type="hidden" id="userType" name="userType" th:value="${userType}">
-                <input type="hidden" id="subscriptionType" name="subscriptionType">
-                <h3 class="mb-4 text-center">Payment Information</h3>
-                <div class="mb-3">
-                    <label for="cardNumber" class="form-label">Card Number</label>
-                    <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="expirationDate" class="form-label">Expiration Date</label>
-                        <input type="text" class="form-control" id="expirationDate" name="expirationDate" placeholder="MM/YY" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="securityCode" class="form-label">Security Code</label>
-                        <input type="text" class="form-control" id="securityCode" name="securityCode" required>
-                    </div>
-                </div>
-                <div id="subscription-error" class="text-danger text-center" style="display: none;">Please select a subscription plan</div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Create Account</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
 
-<footer class="py-3 footer-custom">
-    <div class="container px-4 px-lg-5">
-        <p class="m-0 text-center">Copyright &copy; NativeSpark 2025</p>
+<div class="modal fade" id="confirmationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success"><i class="fas fa-check-circle"></i> Subscription Updated</h5>
+            </div>
+            <div class="modal-body text-center">
+                <p>Your subscription has been successfully updated!</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-success" onclick="redirectToAccount()">OK</button>
+            </div>
+        </div>
     </div>
+</div>
+
+<footer class="footer-custom">
+    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function selectSubscription(subscriptionType) {
-        document.getElementById('subscriptionType').value = subscriptionType;
 
-        const cards = document.querySelectorAll('.subscription-card');
-        cards.forEach(card => {
-            card.classList.remove('selected-card');
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const currentSubscription = document.getElementById("currentSubscription").innerText;
+        selectSubscription(currentSubscription, true);
+    });
+
+    function selectSubscription(subscriptionType, onLoad = false) {
+        document.getElementById('selectedSubscription').value = subscriptionType;
+        document.querySelectorAll('.subscription-option').forEach(option => option.classList.remove('selected'));
+
+        const selectedOption = document.getElementById(subscriptionType.toLowerCase() + "Option");
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+
+        // ✅ Show payment section only for paid plans
+        const paymentSection = document.getElementById('paymentSection');
+        if (!onLoad) {
+            if (subscriptionType === 'Basic' || subscriptionType === 'Premium') {
+                paymentSection.classList.remove('hidden');
+            } else {
+                paymentSection.classList.add('hidden');
+            }
+        }
+    }
+
+    function confirmSubscription(event) {
+        event.preventDefault();
+
+        const subscriptionType = document.getElementById('selectedSubscription').value;
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+        fetch("/update-subscription", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRF-TOKEN": csrfToken
+            },
+            body: new URLSearchParams({ subscriptionType })
+        }).then(response => response.text())  // ✅ Read as text first
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);  // ✅ Convert text to JSON
+                    if (data.status === "success") {
+                        new bootstrap.Modal(document.getElementById('confirmationModal')).show();
+                    } else {
+                        alert("Error updating subscription: " + data.message);
+                    }
+                } catch (error) {
+                    alert("Subscription update failed: Invalid server response.");
+                }
+            }).catch(error => {
+            alert("Subscription update failed: " + error.message);
         });
 
-        if (subscriptionType === 'Free') {
-            document.getElementById('freeCard').classList.add('selected-card');
-        } else if (subscriptionType === 'Basic') {
-            document.getElementById('basicCard').classList.add('selected-card');
-        } else if (subscriptionType === 'Premium') {
-            document.getElementById('premiumCard').classList.add('selected-card');
-        }
     }
 
-    function validateForm() {
-        const subscriptionType = document.getElementById('subscriptionType').value;
-        const subscriptionError = document.getElementById('subscription-error');
-
-        if (!subscriptionType) {
-            subscriptionError.style.display = 'block';
-            return false;
-        } else {
-            subscriptionError.style.display = 'none';
-            return true;
-        }
+    function redirectToAccount() {
+        window.location.href = "/account";
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const userType = document.getElementById('userType').value;
-        const freeCard = document.getElementById('freeCard');
-        const basicCard = document.getElementById('basicCard');
-        const premiumCard = document.getElementById('premiumCard');
-        const premiumText = document.getElementById('premiumText');
-        const subscriptionTypeInput = document.getElementById('subscriptionType');
-
-        if (userType === 'ENTREPRENEUR') {
-            // Disable free and basic cards
-            freeCard.classList.add('disabled-card');
-            basicCard.classList.add('disabled-card');
-            premiumCard.classList.add('selected-card');
-            subscriptionTypeInput.value = 'Premium';
-
-            // Update the premium card text to indicate it's free for entrepreneurs
-            premiumText.textContent = "Free for Entrepreneurs";
-        } else {
-            freeCard.classList.remove('disabled-card');
-            basicCard.classList.remove('disabled-card');
-            premiumCard.classList.remove('disabled-card');
-            freeCard.addEventListener('click', function () {
-                selectSubscription('Free');
-            });
-            basicCard.addEventListener('click', function () {
-                selectSubscription('Basic');
-            });
-            premiumCard.addEventListener('click', function () {
-                selectSubscription('Premium');
-            });
-        }
-    });
 </script>
+
 </body>
 </html>

@@ -1,10 +1,8 @@
 package org.example.nativespark.services;
 
+import org.example.nativespark.entities.Subscription;
 import org.example.nativespark.entities.User;
-import org.example.nativespark.repositories.BasicUserRepository;
-import org.example.nativespark.repositories.BusinessUserRepository;
-import org.example.nativespark.repositories.EntrepreneurUserRepository;
-import org.example.nativespark.repositories.UserRepository;
+import org.example.nativespark.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,10 +27,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private EntrepreneurUserRepository entrepreneurUserRepository;
 
+    private final SubscriptionRepository subscriptionRepository;
+
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, SubscriptionRepository subscriptionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     public User createUser(String email, String password, String userType) {
@@ -41,7 +42,15 @@ public class UserService implements UserDetailsService {
         }
 
         User user = new User(email, passwordEncoder.encode(password), userType);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        // Assign a free subscription
+        Subscription subscription = new Subscription(user, "Free");
+        subscriptionRepository.save(subscription);
+
+        System.out.println("✅ Free subscription assigned to user: " + email);
+
+        return user;
     }
 
     @Override

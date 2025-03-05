@@ -28,6 +28,9 @@ public class AccountController {
     @Autowired
     private BasicUserRepository basicUserRepository;
 
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
     @GetMapping
     public String showAccountPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -82,6 +85,12 @@ public class AccountController {
 
             default:
                 System.out.println("❌ Unknown user type: " + user.getUserType());
+        }
+
+        // Fetch the user's subscription
+        Optional<Subscription> subscriptionOptional = subscriptionRepository.findByUser(user);
+        if (subscriptionOptional.isPresent()) {
+            model.addAttribute("subscription", subscriptionOptional.get());
         }
 
         return "account";
