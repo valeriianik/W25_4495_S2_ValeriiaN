@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class EntrepreneurUserService {
@@ -42,6 +43,23 @@ public class EntrepreneurUserService {
         Files.copy(photo.getInputStream(), filePath);
 
         EntrepreneurUser entrepreneurUser = new EntrepreneurUser(user, firstName, lastName, about, identityType, filePath.toString());
+        return entrepreneurUserRepository.save(entrepreneurUser);
+    }
+
+    @Transactional
+    public EntrepreneurUser updateEntrepreneurUser(User user, String firstName, String lastName, String identityType, String about) {
+        Optional<EntrepreneurUser> optionalEntrepreneurUser = entrepreneurUserRepository.findByUser(user);
+
+        if (optionalEntrepreneurUser.isEmpty()) {
+            throw new IllegalStateException("Entrepreneur user not found");
+        }
+
+        EntrepreneurUser entrepreneurUser = optionalEntrepreneurUser.get();
+        entrepreneurUser.setFirstName(firstName);
+        entrepreneurUser.setLastName(lastName);
+        entrepreneurUser.setIdentityType(identityType);
+        entrepreneurUser.setAbout(about);
+
         return entrepreneurUserRepository.save(entrepreneurUser);
     }
 }

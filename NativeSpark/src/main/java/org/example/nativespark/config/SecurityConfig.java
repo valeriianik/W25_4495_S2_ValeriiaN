@@ -27,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/update-subscription", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/account").authenticated() // ✅ Ensure `/account` is protected
                         .anyRequest().authenticated()
                 )
@@ -50,6 +50,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {

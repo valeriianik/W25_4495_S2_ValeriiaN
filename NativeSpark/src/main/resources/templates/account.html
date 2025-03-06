@@ -19,37 +19,35 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
         .footer-custom {
-            background-color: rgba(1, 25, 13, 0.9);
+            background-color: #014017;
             color: white;
-            width: 100%;
-            padding: 1rem 0;
-            border-top: 2px solid #014017;
-            font-size: 0.9rem;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1rem;
         }
 
-        .content {
-            flex: 1;
-            padding-top: 20px;
-        }
-
-        .form-container {
+        .profile-container {
+            display: flex;
+            align-items: center;
             background: #fff;
             padding: 2rem;
             border-radius: 10px;
-            margin-bottom: 1rem;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        .profile-pic {
+            width: 500px;
+            height: 500px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .form-container {
+            width: 50%;
         }
 
         .btn-success {
@@ -63,23 +61,18 @@
             border-color: #02371e;
         }
 
-        .alert {
-            margin-top: 20px;
-            font-size: 0.9rem;
+        .form-control[readonly] {
+            background-color: #e9ecef;
         }
 
-        .text-center a {
-            color: #014017;
-            transition: color 0.3s;
-        }
-
-        .text-center a:hover {
-            color: #02371e;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
 
+<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
         <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
@@ -91,6 +84,18 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/account}">My Account</a></li>
+
+                <!-- Dropdown Menu -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
+                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li> <!-- Placeholder for future features -->
+                    </ul>
+                </li>
+
                 <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Login</a></li>
                 <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
             </ul>
@@ -98,48 +103,158 @@
     </div>
 </nav>
 
+<!-- ✅ Account Section -->
 <div class="container content">
-    <div class="row justify-content-center">
-        <div class="col-md-8 form-container text-center">
+    <div class="profile-container">
+
+        <!-- ✅ Profile Picture (Left) -->
+        <div>
+            <img th:if="${user.userType == 'ENTREPRENEUR'}" th:src="@{'/' + ${entrepreneur.photoPath}}" class="profile-pic" alt="Profile Picture">
+            <img th:if="${user.userType == 'BUSINESS'}" th:src="@{'/' + ${business.logoPath}}" class="profile-pic" alt="Business Logo">
+            <img th:if="${user.userType == 'BASIC'}" th:src="@{'/' + ${basic.photoPath}}" class="profile-pic" alt="Profile Picture">
+        </div>
+
+        <!-- ✅ User Information (Right) -->
+        <div class="form-container">
             <h3>My Account</h3>
 
-            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${user.userType}"></span></p>
+            <form id="accountForm" th:action="@{/account/update}" method="post">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/> <!-- ✅ CSRF Token -->
 
-            <div th:if="${user.userType == 'ENTREPRENEUR' and entrepreneur != null}">
-                <img th:src="@{'/' + ${entrepreneur.photoPath}}" class="profile-pic" alt="Profile Picture">
-                <h4 th:text="${entrepreneur.firstName + ' ' + entrepreneur.lastName}"></h4>
-                <p><strong>About:</strong> <span th:text="${entrepreneur.about}"></span></p>
-                <p><strong>Identity Type:</strong> <span th:text="${entrepreneur.identityType}"></span></p>
-            </div>
-
-            <div th:if="${user.userType == 'BUSINESS' and business != null}">
-                <h4><strong>Business Name:</strong> <span th:text="${business.businessName}"></span></h4>
-                <p><strong>Description:</strong> <span th:text="${business.description}"></span></p>
-
-                <div th:if="${business.logoPath != null}">
-                    <img th:src="@{'/' + ${business.logoPath}}" class="profile-pic" alt="Business Logo">
+                <!-- ✅ Email (Read-Only) -->
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="text" class="form-control" th:value="${user.email}" readonly>
                 </div>
-            </div>
 
-            <div th:if="${user.userType == 'BASIC' and basic != null}">
-                <img th:src="@{'/' + ${basic.photoPath}}" class="profile-pic" alt="Profile Picture">
-                <h4 th:text="${basic.firstName + ' ' + basic.lastName}"></h4>
-                <p><strong>About:</strong> <span th:text="${basic.about}"></span></p>
-            </div>
+                <!-- ✅ User Type (Read-Only) -->
+                <div class="mb-3">
+                    <label>User Type</label>
+                    <input name="userType" type="text" class="form-control" th:value="${user.userType}" readonly>
+                </div>
 
-            <div class="text-center">
-                <a href="/account/edit" class="btn btn-primary">Edit Profile</a>
-            </div>
+                <!-- ✅ Subscription -->
+                <div class="mb-3">
+                    <label>Subscription</label>
+                    <input type="text" class="form-control" th:value="${subscription.subscriptionType}" readonly>
+                </div>
+
+
+<!--                 ✅ Editable Fields for Entrepreneur -->
+                <div th:if="${user.userType == 'ENTREPRENEUR'}">
+                    <div class="mb-3">
+                        <label>First Name</label>
+                        <input type="text" class="form-control edit-field" name="firstName" th:value="${entrepreneur.firstName}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control edit-field" name="lastName" th:value="${entrepreneur.lastName}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Identity Type</label>
+                        <select class="form-control edit-field" name="identityType" disabled>
+                            <option value="First Nations" th:selected="${entrepreneur.identityType == 'First Nations'}">First Nations</option>
+                            <option value="Métis" th:selected="${entrepreneur.identityType == 'Métis'}">Métis</option>
+                            <option value="Inuit" th:selected="${entrepreneur.identityType == 'Inuit'}">Inuit</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>About</label>
+                        <textarea class="form-control edit-field" name="about" readonly>[[${entrepreneur.about}]]</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Upload New Logo</label>
+                        <input type="file" class="form-control edit-field" name="logo" accept="image/*" disabled>
+                    </div>
+                </div>
+
+                <div th:if="${user.userType == 'BUSINESS'}">
+                    <div class="mb-3">
+                        <label>Business Name</label>
+                        <input type="text" class="form-control edit-field" name="businessName" th:value="${business.businessName}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea class="form-control edit-field" name="description" readonly>[[${business.description}]]</textarea>
+                    </div>
+                    <!-- Upload Business Logo -->
+                    <div class="mb-3">
+                        <label>Upload New Logo</label>
+                        <input type="file" class="form-control edit-field" name="logo" accept="image/*" disabled>
+                    </div>
+                </div>
+
+                <div th:if="${user.userType == 'BASIC'}">
+                    <div class="mb-3">
+                        <label>First Name</label>
+                        <input type="text" class="form-control edit-field" name="firstName" th:value="${basic.firstName}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control edit-field" name="lastName" th:value="${basic.lastName}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>About</label>
+                        <textarea class="form-control edit-field" name="about" readonly>[[${basic.about}]]</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Upload New Logo</label>
+                        <input type="file" class="form-control edit-field" name="logo" accept="image/*" disabled>
+                    </div>
+                </div>
+
+                <!-- ✅ Buttons -->
+                <button type="button" class="btn btn-primary" id="editBtn" onclick="toggleEdit()">Edit Profile</button>
+                <button type="submit" class="btn btn-success hidden" id="saveBtn">Save Changes</button>
+            </form>
         </div>
     </div>
 </div>
+
+<!-- ✅ Footer -->
 
 <footer class="footer-custom">
     <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
 </footer>
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+        function toggleEdit() {
+            // Get the user type from the page
+            let userType = document.querySelector("input[name='userType']").value;
+
+            // Enable all text fields
+            document.querySelectorAll(".edit-field").forEach(field => field.removeAttribute("readonly"));
+
+            // Enable dropdown for identity type ONLY for ENTREPRENEUR
+            let identityDropdown = document.querySelector("select[name='identityType']");
+            if (identityDropdown) {
+                if (userType === "ENTREPRENEUR") {
+                    identityDropdown.removeAttribute("disabled");
+                }
+            }
+
+            // Enable file input ONLY for BUSINESS users
+            let logoInput = document.querySelector("input[name='logo']");
+            if (logoInput) {
+                if (userType === "BUSINESS") {
+                    logoInput.removeAttribute("disabled");
+                }
+                else if (userType === "ENTREPRENEUR"){
+                    logoInput.removeAttribute("disabled");
+                }
+                else if(userType === "BASIC") {
+                    logoInput.removeAttribute("disabled");
+                }
+            }
+
+            // Hide Edit button, show Save button
+            document.getElementById("editBtn").classList.add("hidden");
+            document.getElementById("saveBtn").classList.remove("hidden");
+        }
+</script>
 </body>
 </html>
 
