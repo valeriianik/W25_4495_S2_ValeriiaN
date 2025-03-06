@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class BasicUserService {
@@ -42,6 +43,22 @@ public class BasicUserService {
         Files.copy(photo.getInputStream(), filePath);
 
         BasicUser basicUser = new BasicUser(user, firstName, lastName, about, filePath.toString());
+        return basicUserRepository.save(basicUser);
+    }
+
+    @Transactional
+    public BasicUser updateBasicUser(User user, String firstName, String lastName, String about) {
+        Optional<BasicUser> optionalBasicUser = basicUserRepository.findByUser(user);
+
+        if (optionalBasicUser.isEmpty()) {
+            throw new IllegalStateException("Basic user not found");
+        }
+
+        BasicUser basicUser = optionalBasicUser.get();
+        basicUser.setFirstName(firstName);
+        basicUser.setLastName(lastName);
+        basicUser.setAbout(about);
+
         return basicUserRepository.save(basicUser);
     }
 }
