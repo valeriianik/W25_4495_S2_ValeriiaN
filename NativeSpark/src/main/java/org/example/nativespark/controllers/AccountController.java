@@ -124,7 +124,8 @@ public class AccountController {
             @RequestParam(required = false) String about,
             @RequestParam(required = false) String businessName,
             @RequestParam(required = false) String description,
-            @RequestParam(value = "logo", required = false) MultipartFile logo,
+            @RequestParam(value = "logo", required = false) MultipartFile logoPath,
+            @RequestParam(value = "photo", required = false) MultipartFile photoPath,
             Model model) throws IOException {
 
         Optional<User> optionalUser = userService.findByEmail(loggedInUser.getUsername());
@@ -138,15 +139,15 @@ public class AccountController {
 
         switch (userType.toLowerCase()) {
             case "business":
-                BusinessUser updatedBusinessUser = businessUserService.updateBusinessUser(user, businessName, description, logo);
+                BusinessUser updatedBusinessUser = businessUserService.updateBusinessUser(user, businessName, description, logoPath);
                 model.addAttribute("business", updatedBusinessUser);
                 break;
             case "entrepreneur":
-                EntrepreneurUser updatedEntrepreneurUser = entrepreneurUserService.updateEntrepreneurUser(user, firstName, lastName, identityType, about);
+                EntrepreneurUser updatedEntrepreneurUser = entrepreneurUserService.updateEntrepreneurUser(user, firstName, lastName, identityType, about, photoPath);
                 model.addAttribute("entrepreneur", updatedEntrepreneurUser);
                 break;
             case "basic":
-                BasicUser updatedBasicUser = basicUserService.updateBasicUser(user, firstName, lastName, about);
+                BasicUser updatedBasicUser = basicUserService.updateBasicUser(user, firstName, lastName, about, photoPath);
                 model.addAttribute("basic", updatedBasicUser);
                 break;
         }

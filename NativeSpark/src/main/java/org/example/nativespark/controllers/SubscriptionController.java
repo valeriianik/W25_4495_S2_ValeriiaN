@@ -1,8 +1,10 @@
 package org.example.nativespark.controllers;
 
 import org.example.nativespark.entities.Subscription;
+import org.example.nativespark.entities.Transaction;
 import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.SubscriptionRepository;
+import org.example.nativespark.repositories.TransactionRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,9 @@ public class SubscriptionController {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @GetMapping("/subscription")
     public String showSubscriptionPage(Model model) {
@@ -92,6 +97,14 @@ public class SubscriptionController {
         User user = userOptional.get();
         Optional<Subscription> subscriptionOptional = subscriptionRepository.findByUser(user);
 
+        // Determine cost based on subscription type
+        double cost = 0.0;
+        if ("Basic".equalsIgnoreCase(subscriptionType)) {
+            cost = 9.99;
+        } else if ("Premium".equalsIgnoreCase(subscriptionType)) {
+            cost = 19.99;
+        }
+
         if (subscriptionOptional.isPresent()) {
             Subscription subscription = subscriptionOptional.get();
             logger.info("Updating subscription for user: " + user.getEmail() + " to " + subscriptionType);
@@ -101,6 +114,13 @@ public class SubscriptionController {
             logger.info("Creating new subscription for user: " + user.getEmail());
             Subscription newSubscription = new Subscription(user, subscriptionType);
             subscriptionRepository.save(newSubscription);
+        }
+
+        // Store transaction ONLY if the user upgrades to a paid subscription
+        if (cost > 0) {
+            Transaction transaction = new Transaction(user, subscriptionType, cost);
+            transactionRepository.save(transaction);
+            logger.info("Transaction recorded: " + transaction.getAmount() + " for " + transaction.getSubscriptionType());
         }
 
         response.put("status", "success");
