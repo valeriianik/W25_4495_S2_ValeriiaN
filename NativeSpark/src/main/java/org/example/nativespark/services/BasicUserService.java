@@ -47,7 +47,7 @@ public class BasicUserService {
     }
 
     @Transactional
-    public BasicUser updateBasicUser(User user, String firstName, String lastName, String about) {
+    public BasicUser updateBasicUser(User user, String firstName, String lastName, String about, MultipartFile photo) throws IOException {
         Optional<BasicUser> optionalBasicUser = basicUserRepository.findByUser(user);
 
         if (optionalBasicUser.isEmpty()) {
@@ -58,6 +58,23 @@ public class BasicUserService {
         basicUser.setFirstName(firstName);
         basicUser.setLastName(lastName);
         basicUser.setAbout(about);
+
+        // If a new logo is uploaded, save it
+        if (photo != null && !photo.isEmpty()) {
+            String uploadDir = "uploads/photos/";
+            File directory = new File(uploadDir);
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            Files.copy(photo.getInputStream(), filePath);
+
+            // Set new logo path
+            basicUser.setPhotoPath(filePath.toString());
+        }
 
         return basicUserRepository.save(basicUser);
     }
