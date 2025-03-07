@@ -47,7 +47,7 @@ public class EntrepreneurUserService {
     }
 
     @Transactional
-    public EntrepreneurUser updateEntrepreneurUser(User user, String firstName, String lastName, String identityType, String about) {
+    public EntrepreneurUser updateEntrepreneurUser(User user, String firstName, String lastName, String identityType, String about, MultipartFile photo) throws IOException {
         Optional<EntrepreneurUser> optionalEntrepreneurUser = entrepreneurUserRepository.findByUser(user);
 
         if (optionalEntrepreneurUser.isEmpty()) {
@@ -59,6 +59,23 @@ public class EntrepreneurUserService {
         entrepreneurUser.setLastName(lastName);
         entrepreneurUser.setIdentityType(identityType);
         entrepreneurUser.setAbout(about);
+
+        // If a new logo is uploaded, save it
+        if (photo != null && !photo.isEmpty()) {
+            String uploadDir = "uploads/photos/";
+            File directory = new File(uploadDir);
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            Files.copy(photo.getInputStream(), filePath);
+
+            // Set new logo path
+            entrepreneurUser.setPhotoPath(filePath.toString());
+        }
 
         return entrepreneurUserRepository.save(entrepreneurUser);
     }
