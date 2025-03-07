@@ -207,6 +207,7 @@
                 <!-- ✅ Buttons -->
                 <button type="button" class="btn btn-primary" id="editBtn" onclick="toggleEdit()">Edit Profile</button>
                 <button type="submit" class="btn btn-success hidden" id="saveBtn">Save Changes</button>
+                <button type="button" class="btn btn-secondary hidden" id="cancelBtn" onclick="cancelEdit()">Cancel</button>
             </form>
         </div>
     </div>
@@ -252,6 +253,11 @@
         // Hide Edit button, show Save button
         document.getElementById("editBtn").classList.add("hidden");
         document.getElementById("saveBtn").classList.remove("hidden");
+        document.getElementById("cancelBtn").classList.remove("hidden");
+    }
+
+    function cancelEdit() {
+        location.reload();
     }
 
 </script>
