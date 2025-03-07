@@ -117,7 +117,7 @@
         <!-- ✅ User Information (Right) -->
         <div class="form-container">
             <h3>My Account</h3>
-            
+
             <form id="accountForm" th:action="@{/account/update}" method="post" enctype="multipart/form-data">
 
             <input type="hidden" name="_csrf" th:value="${_csrf.token}"/> <!-- ✅ CSRF Token -->
