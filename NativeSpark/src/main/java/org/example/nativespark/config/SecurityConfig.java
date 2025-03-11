@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/update-subscription", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/account").authenticated() // ✅ Ensure `/account` is protected
+                        .requestMatchers("/my_postings").hasAnyRole("BUSINESS", "ENTREPRENEUR") // ✅ Restrict `/my_postings`
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
