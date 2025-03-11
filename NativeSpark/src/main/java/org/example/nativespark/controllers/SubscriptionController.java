@@ -1,10 +1,10 @@
 package org.example.nativespark.controllers;
 
 import org.example.nativespark.entities.Subscription;
-import org.example.nativespark.entities.Transaction;
+import org.example.nativespark.entities.Order;
 import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.SubscriptionRepository;
-import org.example.nativespark.repositories.TransactionRepository;
+import org.example.nativespark.repositories.OrderRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class SubscriptionController {
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private OrderRepository orderRepository;
 
     @GetMapping("/subscription")
     public String showSubscriptionPage(Model model) {
@@ -118,9 +118,9 @@ public class SubscriptionController {
 
         // Store transaction ONLY if the user upgrades to a paid subscription
         if (cost > 0) {
-            Transaction transaction = new Transaction(user, subscriptionType, cost);
-            transactionRepository.save(transaction);
-            logger.info("Transaction recorded: " + transaction.getAmount() + " for " + transaction.getSubscriptionType());
+            Order order = new Order(user, subscriptionType, cost);
+            orderRepository.save(order);
+            logger.info("Transaction recorded: " + order.getAmount() + " for " + order.getSubscriptionType());
         }
 
         response.put("status", "success");
