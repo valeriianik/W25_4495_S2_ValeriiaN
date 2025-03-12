@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface BusinessUserRepository extends JpaRepository<BusinessUser, Long> {
     Optional<BusinessUser> findByUser(User user);
-
 }

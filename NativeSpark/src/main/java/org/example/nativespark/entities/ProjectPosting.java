@@ -3,6 +3,7 @@ package org.example.nativespark.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class ProjectPosting {
     private String projectDescription;
     private String projectScope;
     private Double budget;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     private String requiredSkills;
     private LocalDateTime postedDate;
 
