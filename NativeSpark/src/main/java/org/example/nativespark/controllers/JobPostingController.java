@@ -8,9 +8,7 @@ import org.example.nativespark.repositories.BusinessUserRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -77,10 +75,9 @@ public class JobPostingController {
         return "redirect:/my_postings"; // Redirect back to postings page
     }
 
-//    @PostMapping("/delete/{id}")
-//    public String deleteJobPosting(@PathVariable Long id) {
-//        jobPostingRepository.deleteById(id);
-//        return "redirect:/my_postings";
-//    }
-
+    @PostMapping("/delete/{id}")
+    public String deleteJobPosting(@PathVariable Long id) {
+        jobPostingRepository.deleteById(id);
+        return "redirect:/my_postings";
+    }
 }

@@ -96,11 +96,11 @@ public class ProductPostingController {
         String email = principal.getName();
         return userRepository.findByEmail(email).orElse(null);
     }
-//    @PostMapping("/delete/{id}")
-//    public String deleteProductPosting(@PathVariable Long id) {
-//        productRepository.deleteById(id);
-//        return "redirect:/my_postings";
-//    }
 
+    @PostMapping("/delete/{id}")
+    public String deleteProductPosting(@PathVariable Long id) {
+        productRepository.deleteById(id);
+        return "redirect:/my_postings";
+    }
 }
 

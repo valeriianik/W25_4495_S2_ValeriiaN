@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // ✅ Ensures session is created
                 )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/job-postings/delete/**", "/product-postings/delete/**"))
                 .userDetailsService(userService);
 
         return http.build();

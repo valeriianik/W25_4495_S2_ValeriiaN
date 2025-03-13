@@ -9,6 +9,7 @@ import org.example.nativespark.repositories.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -77,10 +78,9 @@ public class ProjectPostingController {
         return "redirect:/my_postings"; // Redirect back to postings page
     }
 
-//    @PostMapping("/delete/{id}")
-//    public String deleteProjectPosting(@PathVariable Long id) {
-//        projectPostingRepository.deleteById(id);
-//        return "redirect:/my_postings";
-//    }
-
+    @PostMapping("/delete/{id}")
+    public String deleteProjectPosting(@PathVariable Long id) {
+        projectPostingRepository.deleteById(id);
+        return "redirect:/my_postings";
+    }
 }
