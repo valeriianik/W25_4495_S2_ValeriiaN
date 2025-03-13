@@ -36,7 +36,6 @@ public class ProductPostingController {
         this.userRepository = userRepository;
     }
 
-    // ✅ Show the product posting creation form
     @GetMapping("/create")
     public String showProductPostingForm(Model model, Principal principal) {
         User user = getAuthenticatedUser(principal);
@@ -51,7 +50,6 @@ public class ProductPostingController {
         return "product-posting-form"; // Thymeleaf template for adding a product
     }
 
-    // ✅ Handle product posting form submission
     @PostMapping("/save")
     public String saveProductPosting(@ModelAttribute Product product,
                                      @RequestParam("imageFile") MultipartFile imageFile,
@@ -100,6 +98,44 @@ public class ProductPostingController {
     @PostMapping("/delete/{id}")
     public String deleteProductPosting(@PathVariable Long id) {
         productRepository.deleteById(id);
+        return "redirect:/my_postings";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            return "redirect:/my_postings?error=ProductNotFound";  // Redirect if not found
+        }
+
+        model.addAttribute("product", product.get());
+        return "edit-product";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateProductPosting(@PathVariable Long id, @ModelAttribute Product product,
+                                       @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        Optional<Product> existingProduct = productRepository.findById(id);
+
+        if (existingProduct.isPresent()) {
+            Product updatedProduct = existingProduct.get();
+            updatedProduct.setProductName(product.getProductName());
+            updatedProduct.setCategory(product.getCategory());
+            updatedProduct.setPrice(product.getPrice());
+            updatedProduct.setProductDescription(product.getProductDescription());
+
+            // ✅ Handle Image Upload
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                Path filePath = Paths.get("uploads/products/", fileName);
+                Files.copy(imageFile.getInputStream(), filePath);
+                updatedProduct.setImagePath("/uploads/products/" + fileName);
+            }
+
+            productRepository.save(updatedProduct);
+        }
+
         return "redirect:/my_postings";
     }
 }

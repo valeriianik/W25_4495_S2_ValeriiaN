@@ -28,7 +28,6 @@ public class JobPostingController {
         this.userRepository = userRepository;
     }
 
-    // ✅ Show the job posting creation form
     @GetMapping("/create")
     public String showJobPostingForm(Model model, Principal principal) {
         // Get the authenticated user's email
@@ -51,7 +50,6 @@ public class JobPostingController {
         return "job-posting-form"; // ✅ Ensure this file exists in `templates/`
     }
 
-    // ✅ Handle job posting form submission
     @PostMapping("/save")
     public String saveJobPosting(JobPosting jobPosting, Principal principal) {
         // Get authenticated user email
@@ -79,5 +77,37 @@ public class JobPostingController {
     public String deleteJobPosting(@PathVariable Long id) {
         jobPostingRepository.deleteById(id);
         return "redirect:/my_postings";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<JobPosting> jobPosting = jobPostingRepository.findById(id);
+
+        if (jobPosting.isEmpty()) {
+            return "redirect:/my_postings?error=JobNotFound";  // Redirect if job does not exist
+        }
+
+        model.addAttribute("jobPosting", jobPosting.get());
+        return "edit-job";  // ✅ Ensure this Thymeleaf template exists in `src/main/resources/templates`
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateJobPosting(@PathVariable Long id, @ModelAttribute JobPosting jobPosting) {
+        Optional<JobPosting> existingJob = jobPostingRepository.findById(id);
+
+        if (existingJob.isPresent()) {
+            JobPosting updatedJob = existingJob.get();
+            updatedJob.setJobTitle(jobPosting.getJobTitle());
+            updatedJob.setLocation(jobPosting.getLocation());
+            updatedJob.setEmploymentType(jobPosting.getEmploymentType());
+            updatedJob.setSalary(jobPosting.getSalary());
+            updatedJob.setRequiredExperience(jobPosting.getRequiredExperience());
+            updatedJob.setRequiredSkills(jobPosting.getRequiredSkills());
+            updatedJob.setJobDescription(jobPosting.getJobDescription());
+
+            jobPostingRepository.save(updatedJob);
+        }
+
+        return "redirect:/my_postings";  // Redirect after successful update
     }
 }

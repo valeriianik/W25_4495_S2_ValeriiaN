@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Job Posting</title>
+    <title>Edit Product Posting - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
         body {
             display: flex;
@@ -71,12 +70,10 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
-                        <!--                        <li><a class="dropdown-item" th:href="@{/my_postings}">My Postings</a></li>-->
-                        <!-- ✅ Show "My Postings" only for Business and Entrepreneur users -->
                         <li th:if="${#authentication.authorities.?[authority == 'ROLE_BUSINESS' or authority == 'ROLE_ENTREPRENEUR'].size() > 0}">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
-                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li> <!-- Placeholder for future features -->
+                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li>
                     </ul>
                 </li>
 
@@ -88,48 +85,51 @@
 </nav>
 
 <div class="container mt-5">
-    <h2>Create Job Posting</h2>
-    <form th:action="@{/job-postings/save}" method="post" th:object="${jobPosting}">
+    <h2 class="text-center">Edit Product Posting</h2>
+
+    <form th:action="@{/product-postings/update/{id}(id=${product.id})}" method="post" enctype="multipart/form-data" class="mt-4">
+        <!-- Hidden Input for Product ID -->
+        <input type="hidden" th:value="${product.id}" name="id">
+
         <div class="mb-3">
-            <label class="form-label">Job Title</label>
-            <input type="text" class="form-control" th:field="*{jobTitle}" required>
+            <label for="productName" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="productName" name="productName" th:value="${product.productName}" required>
         </div>
+
         <div class="mb-3">
-            <label class="form-label">Job Description</label>
-            <textarea class="form-control" th:field="*{jobDescription}" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Location</label>
-            <input type="text" class="form-control" th:field="*{location}" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Employment Type</label>
-            <select class="form-control" th:field="*{employmentType}">
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Contract">Contract</option>
-                <option value="Internship">Internship</option>
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" required>
+                <option value="Clothing" th:selected="${product.category == 'Clothing'}">Clothing</option>
+                <option value="Handmade" th:selected="${product.category == 'Handmade'}">Handmade</option>
+                <option value="Art" th:selected="${product.category == 'Art'}">Art</option>
+                <option value="Jewelry" th:selected="${product.category == 'Jewelry'}">Jewelry</option>
+                <option value="Food" th:selected="${product.category == 'Food'}">Food</option>
+                <option value="Other" th:selected="${product.category == 'Other'}">Other</option>
             </select>
         </div>
+
         <div class="mb-3">
-            <label class="form-label">Salary</label>
-            <input type="number" class="form-control" th:field="*{salary}" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Required Experience (Years)</label>
-            <input type="number" class="form-control" th:field="*{requiredExperience}">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Required Skills</label>
-            <input type="text" class="form-control" th:field="*{requiredSkills}">
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" class="form-control" id="price" name="price" th:value="${product.price}" required>
         </div>
 
-        <button type="submit" class="btn btn-success">Save Job Posting</button>
-        <a href="/my_postings" class="btn btn-secondary">Cancel</a>
+        <div class="mb-3">
+            <label for="productDescription" class="form-label">Product Description</label>
+            <textarea class="form-control" id="productDescription" name="productDescription" rows="4" required
+                      th:text="${product.productDescription}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Product Image</label>
+            <input type="file" class="form-control" id="imageFile" name="imageFile">
+            <p class="text-muted mt-1">Leave blank to keep the current image.</p>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update Product</button>
+        <a th:href="@{/my_postings}" class="btn btn-secondary">Cancel</a>
+
     </form>
 </div>
-
-<!-- ✅ Footer -->
 
 <footer class="footer-custom">
     <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>

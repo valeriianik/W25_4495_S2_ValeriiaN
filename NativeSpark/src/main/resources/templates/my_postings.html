@@ -169,7 +169,7 @@
                         <p><strong>Description:</strong> <span th:text="${job.jobDescription}"></span></p>
                     </div>
                     <div>
-                        <a th:href="@{/edit-job/{id}(id=${job.id})}" class="btn btn-dark-green btn-sm">Edit</a>
+                        <a th:href="@{/job-postings/edit/{id}(id=${job.id})}" class="btn btn-dark-green btn-sm">Edit</a>
                         <form th:action="@{/job-postings/delete/{id}(id=${job.id})}" method="post">
                             <input type="hidden" name="_method" value="DELETE">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -204,7 +204,7 @@
                         <p><strong>Description:</strong> <span th:text="${project.projectDescription}"></span></p>
                     </div>
                     <div>
-                        <a th:href="@{/edit-project/{id}(id=${project.id})}" class="btn btn-dark-green btn-sm">Edit</a>
+                        <a th:href="@{/project-postings/edit/{id}(id=${project.id})}" class="btn btn-dark-green btn-sm">Edit</a>
                         <form th:action="@{/project-postings/delete/{id}(id=${project.id})}" method="post">
                             <input type="hidden" name="_method" value="DELETE">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -247,13 +247,12 @@
 
                 <!-- ✅ Right Buttons -->
                 <div class="ms-auto">
-                    <a th:href="@{/edit-product/{id}(id=${product.id})}" class="btn btn-dark-green btn-sm">Edit</a>
+                    <a th:href="@{/product-postings/edit/{id}(id=${product.id})}" class="btn btn-dark-green btn-sm">Edit</a>
                     <form th:action="@{/product-postings/delete/{id}(id=${product.id})}" method="post">
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
-
                 </div>
             </div>
         </div>

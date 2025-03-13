@@ -8,10 +8,7 @@ import org.example.nativespark.repositories.ProjectPostingRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -31,7 +28,6 @@ public class ProjectPostingController {
         this.userRepository = userRepository;
     }
 
-    // ✅ Show the job posting creation form
     @GetMapping("/create")
     public String showProjectPostingForm(Model model, Principal principal) {
         // Get the authenticated user's email
@@ -54,7 +50,6 @@ public class ProjectPostingController {
         return "project-posting-form"; // ✅ Ensure this file exists in `templates/`
     }
 
-    // ✅ Handle job posting form submission
     @PostMapping("/save")
     public String saveProjectPosting(ProjectPosting projectPosting, Principal principal) {
         // Get authenticated user email
@@ -81,6 +76,37 @@ public class ProjectPostingController {
     @PostMapping("/delete/{id}")
     public String deleteProjectPosting(@PathVariable Long id) {
         projectPostingRepository.deleteById(id);
+        return "redirect:/my_postings";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<ProjectPosting> projectPosting = projectPostingRepository.findById(id);
+
+        if (projectPosting.isEmpty()) {
+            return "redirect:/my_postings?error=ProjectNotFound";  // Redirect if not found
+        }
+
+        model.addAttribute("projectPosting", projectPosting.get());
+        return "edit-project";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateProjectPosting(@PathVariable Long id, @ModelAttribute ProjectPosting projectPosting) {
+        Optional<ProjectPosting> existingProject = projectPostingRepository.findById(id);
+
+        if (existingProject.isPresent()) {
+            ProjectPosting updatedProject = existingProject.get();
+            updatedProject.setProjectTitle(projectPosting.getProjectTitle());
+            updatedProject.setBudget(projectPosting.getBudget());
+            updatedProject.setDeadline(projectPosting.getDeadline());
+            updatedProject.setRequiredSkills(projectPosting.getRequiredSkills());
+            updatedProject.setProjectScope(projectPosting.getProjectScope());
+            updatedProject.setProjectDescription(projectPosting.getProjectDescription());
+
+            projectPostingRepository.save(updatedProject);
+        }
+
         return "redirect:/my_postings";
     }
 }
