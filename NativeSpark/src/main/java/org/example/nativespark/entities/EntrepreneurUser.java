@@ -2,6 +2,8 @@ package org.example.nativespark.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "entrepreneur_users")
 public class EntrepreneurUser {
@@ -9,6 +11,9 @@ public class EntrepreneurUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "entrepreneur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)  // ✅ Correct reference

@@ -14,23 +14,24 @@
             background-color: #f4f4f9;
         }
 
+        /* Navbar */
         .navbar-custom {
             background-color: rgba(2, 55, 30, 0.9) !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-brand {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .footer-custom {
-            background-color: rgba(1, 25, 13, 0.9);
+            background-color: #014017;
             color: white;
-            width: 100%;
-            padding: 1rem 0;
-            border-top: 2px solid #014017;
-            font-size: 0.9rem;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1rem;
         }
 
         .content {
@@ -109,6 +110,12 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
+                        <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
+<!--                        <li><a class="dropdown-item" th:href="@{/my_postings}">My Postings</a></li>-->
+                        <!-- ✅ Show "My Postings" only for Business and Entrepreneur users -->
+                        <li th:if="${#authentication.authorities.?[authority == 'ROLE_BUSINESS' or authority == 'ROLE_ENTREPRENEUR'].size() > 0}">
+                            <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
+                        </li>
                         <li><a class="dropdown-item" href="#">Coming Soon...</a></li> <!-- Placeholder for future features -->
                     </ul>
                 </li>
@@ -131,10 +138,8 @@
     </div>
 </div>
 
-<footer class="py-3 footer-custom">
-    <div class="container px-4 px-lg-5">
-        <p class="m-0 text-center">Copyright &copy; NativeSpark 2024</p>
-    </div>
+<footer class="footer-custom">
+    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

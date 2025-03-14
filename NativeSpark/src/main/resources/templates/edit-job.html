@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NativeSpark</title>
+    <title>Edit Job Posting - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -32,25 +32,7 @@
             padding: 20px 0;
             text-align: center;
             font-size: 1rem;
-        }
-
-        .content {
-            flex: 1;
-            padding-top: 20px;
-        }
-
-        .form-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
         }
 
         .btn-success {
@@ -64,30 +46,18 @@
             border-color: #02371e;
         }
 
-        .alert {
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-
-        .text-center a {
-            color: #014017;
-            transition: color 0.3s;
-        }
-
-        .text-center a:hover {
-            color: #02371e;
-        }
     </style>
 </head>
 <body>
+
+<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-    <div class="container px-5">
+    <div class="container">
         <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
@@ -101,8 +71,6 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
-<!--                        <li><a class="dropdown-item" th:href="@{/my_postings}">My Postings</a></li>-->
-                        <!-- ✅ Show "My Postings" only for Business and Entrepreneur users -->
                         <li th:if="${#authentication.authorities.?[authority == 'ROLE_BUSINESS' or authority == 'ROLE_ENTREPRENEUR'].size() > 0}">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
@@ -117,44 +85,64 @@
     </div>
 </nav>
 
-<div class="container px-4 px-lg-5 content">
-    <div class="row justify-content-center my-5">
-        <div class="col-lg-6 form-container">
-            <h2 class="mb-4 text-center">Login</h2>
-            <form th:action="@{/login}" method="post">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+<div class="container mt-5">
+    <h2 class="text-center">Edit Job Posting</h2>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <!-- ✅ FIX: Change 'name="email"' to 'name="username"' -->
-                    <input type="email" class="form-control" id="email" name="username" required>
-                </div>
+    <form th:action="@{/job-postings/update/{id}(id=${jobPosting.id})}" method="post" class="mt-4">
+        <!-- Hidden Input for Job ID -->
+        <input type="hidden" th:value="${jobPosting.id}" name="id">
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Login</button>
-                </div>
-
-                <div th:if="${param.error}" class="mt-3 alert alert-danger">
-                    Invalid email or password.
-                </div>
-
-                <div class="mt-3 text-center">
-                    <a th:href="@{/select-user-type}">Don't have an account? Sign up here</a>
-                </div>
-            </form>
+        <div class="mb-3">
+            <label for="jobTitle" class="form-label">Job Title</label>
+            <input type="text" class="form-control" id="jobTitle" name="jobTitle" th:value="${jobPosting.jobTitle}" required>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" th:value="${jobPosting.location}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="employmentType" class="form-label">Employment Type</label>
+            <select class="form-select" id="employmentType" name="employmentType" required>
+                <option th:selected="${jobPosting.employmentType == 'Full-Time'}" value="Full-Time">Full-Time</option>
+                <option th:selected="${jobPosting.employmentType == 'Part-Time'}" value="Part-Time">Part-Time</option>
+                <option th:selected="${jobPosting.employmentType == 'Contract'}" value="Contract">Contract</option>
+                <option th:selected="${jobPosting.employmentType == 'Internship'}" value="Internship">Internship</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="salary" class="form-label">Salary ($)</label>
+            <input type="number" class="form-control" id="salary" name="salary" th:value="${jobPosting.salary}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="requiredExperience" class="form-label">Required Experience (Years)</label>
+            <input type="number" class="form-control" id="requiredExperience" name="requiredExperience" th:value="${jobPosting.requiredExperience}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="requiredSkills" class="form-label">Required Skills</label>
+            <input type="text" class="form-control" id="requiredSkills" name="requiredSkills" th:value="${jobPosting.requiredSkills}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="jobDescription" class="form-label">Job Description</label>
+            <textarea class="form-control" id="jobDescription" name="jobDescription" rows="4" required
+                      th:text="${jobPosting.jobDescription}"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update Job</button>
+        <a th:href="@{/my_postings}" class="btn btn-secondary">Cancel</a>
+
+
+    </form>
 </div>
 
 <footer class="footer-custom">
     <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

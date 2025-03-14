@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - NativeSpark</title>
+    <title>Edit Product Posting - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -32,25 +32,7 @@
             padding: 20px 0;
             text-align: center;
             font-size: 1rem;
-        }
-
-        .content {
-            flex: 1;
-            padding-top: 20px;
-        }
-
-        .form-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .form-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
         }
 
         .btn-success {
@@ -63,31 +45,18 @@
             background-color: #02371e;
             border-color: #02371e;
         }
-
-        .alert {
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-
-        .text-center a {
-            color: #014017;
-            transition: color 0.3s;
-        }
-
-        .text-center a:hover {
-            color: #02371e;
-        }
     </style>
 </head>
 <body>
+
+<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-    <div class="container px-5">
+    <div class="container">
         <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
@@ -101,12 +70,10 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
-<!--                        <li><a class="dropdown-item" th:href="@{/my_postings}">My Postings</a></li>-->
-                        <!-- ✅ Show "My Postings" only for Business and Entrepreneur users -->
                         <li th:if="${#authentication.authorities.?[authority == 'ROLE_BUSINESS' or authority == 'ROLE_ENTREPRENEUR'].size() > 0}">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
-                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li> <!-- Placeholder for future features -->
+                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li>
                     </ul>
                 </li>
 
@@ -117,44 +84,61 @@
     </div>
 </nav>
 
-<div class="container px-4 px-lg-5 content">
-    <div class="row justify-content-center my-5">
-        <div class="col-lg-6 form-container">
-            <h2 class="mb-4 text-center">Login</h2>
-            <form th:action="@{/login}" method="post">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+<div class="container mt-5">
+    <h2 class="text-center">Edit Product Posting</h2>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <!-- ✅ FIX: Change 'name="email"' to 'name="username"' -->
-                    <input type="email" class="form-control" id="email" name="username" required>
-                </div>
+    <form th:action="@{/product-postings/update/{id}(id=${product.id})}" method="post" enctype="multipart/form-data" class="mt-4">
+        <!-- Hidden Input for Product ID -->
+        <input type="hidden" th:value="${product.id}" name="id">
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Login</button>
-                </div>
-
-                <div th:if="${param.error}" class="mt-3 alert alert-danger">
-                    Invalid email or password.
-                </div>
-
-                <div class="mt-3 text-center">
-                    <a th:href="@{/select-user-type}">Don't have an account? Sign up here</a>
-                </div>
-            </form>
+        <div class="mb-3">
+            <label for="productName" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="productName" name="productName" th:value="${product.productName}" required>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" required>
+                <option value="Clothing" th:selected="${product.category == 'Clothing'}">Clothing</option>
+                <option value="Handmade" th:selected="${product.category == 'Handmade'}">Handmade</option>
+                <option value="Art" th:selected="${product.category == 'Art'}">Art</option>
+                <option value="Jewelry" th:selected="${product.category == 'Jewelry'}">Jewelry</option>
+                <option value="Food" th:selected="${product.category == 'Food'}">Food</option>
+                <option value="Other" th:selected="${product.category == 'Other'}">Other</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" class="form-control" id="price" name="price" th:value="${product.price}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">QTY</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" th:value="${product.quantity}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="productDescription" class="form-label">Product Description</label>
+            <textarea class="form-control" id="productDescription" name="productDescription" rows="4" required
+                      th:text="${product.productDescription}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Product Image</label>
+            <input type="file" class="form-control" id="imageFile" name="imageFile">
+            <p class="text-muted mt-1">Leave blank to keep the current image.</p>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update Product</button>
+        <a th:href="@{/my_postings}" class="btn btn-secondary">Cancel</a>
+
+    </form>
 </div>
 
 <footer class="footer-custom">
     <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

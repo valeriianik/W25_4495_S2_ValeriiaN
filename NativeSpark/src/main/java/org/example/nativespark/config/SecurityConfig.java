@@ -27,8 +27,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/update-subscription", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/update-subscription", "/about", "/login", "/register/**", "/select-user-type", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                         .requestMatchers("/account").authenticated() // ✅ Ensure `/account` is protected
+                        .requestMatchers("/product-postings/**").permitAll()
+                        .requestMatchers("/my_postings").hasAnyRole("BUSINESS", "ENTREPRENEUR") // ✅ Restrict `/my_postings`
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -46,6 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // ✅ Ensures session is created
                 )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/job-postings/delete/**", "/product-postings/delete/**"))
                 .userDetailsService(userService);
 
         return http.build();
