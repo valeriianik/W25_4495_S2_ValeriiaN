@@ -124,6 +124,7 @@ public class ProductPostingController {
             updatedProduct.setCategory(product.getCategory());
             updatedProduct.setPrice(product.getPrice());
             updatedProduct.setProductDescription(product.getProductDescription());
+            updatedProduct.setQuantity(product.getQuantity());
 
             // ✅ Handle Image Upload
             if (imageFile != null && !imageFile.isEmpty()) {

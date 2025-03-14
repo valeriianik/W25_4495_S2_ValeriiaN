@@ -101,6 +101,10 @@
             <input type="number" class="form-control" th:field="*{price}" step="0.01" required>
         </div>
         <div class="mb-3">
+            <label class="form-label">QTY</label>
+            <input type="number" class="form-control" th:field="*{quantity}" step="0.01" required>
+        </div>
+        <div class="mb-3">
             <label class="form-label">Category</label>
             <select class="form-control" th:field="*{category}">
                 <option value="Clothing">Clothing</option>

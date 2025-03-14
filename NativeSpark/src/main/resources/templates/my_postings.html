@@ -241,6 +241,7 @@
                     <h5 th:text="${product.productName}"></h5>
                     <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
                     <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>
+                    <p><strong>QTY:</strong> <span th:text="${product.quantity}"></span></p>
                     <p><strong>Posted On:</strong> <span th:text="${#temporals.format(product.postedDate, 'yyyy-MM-dd HH:mm')}"></span></p>
                     <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>
                 </div>

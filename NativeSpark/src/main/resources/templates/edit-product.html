@@ -114,6 +114,11 @@
         </div>
 
         <div class="mb-3">
+            <label for="quantity" class="form-label">QTY</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" th:value="${product.quantity}" required>
+        </div>
+
+        <div class="mb-3">
             <label for="productDescription" class="form-label">Product Description</label>
             <textarea class="form-control" id="productDescription" name="productDescription" rows="4" required
                       th:text="${product.productDescription}"></textarea>

@@ -27,6 +27,7 @@ public class Product {
     private String category;
     private String imagePath;  // Path for storing product image
     private LocalDateTime postedDate;
+    private Integer quantity;
 
     @PrePersist
     protected void onCreate() {
