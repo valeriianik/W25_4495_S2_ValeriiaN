@@ -23,7 +23,7 @@
 <!--</html>-->
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -123,6 +123,7 @@
                         <li sec:authorize="hasAnyAuthority('ROLE_BUSINESS', 'ROLE_ENTREPRENEUR')">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
+                        <li><a class="dropdown-item" th:href="@{/saved}">Saved</a></li>
                         <li><a class="dropdown-item" href="#">Coming Soon...</a></li>
                     </ul>
                 </li>

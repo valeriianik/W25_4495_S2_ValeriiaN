@@ -1,11 +1,7 @@
 package org.example.nativespark.controllers;
 
-import org.example.nativespark.entities.Product;
-import org.example.nativespark.entities.EntrepreneurUser;
-import org.example.nativespark.entities.User;
-import org.example.nativespark.repositories.ProductRepository;
-import org.example.nativespark.repositories.EntrepreneurUserRepository;
-import org.example.nativespark.repositories.UserRepository;
+import org.example.nativespark.entities.*;
+import org.example.nativespark.repositories.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

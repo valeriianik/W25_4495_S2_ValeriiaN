@@ -87,6 +87,7 @@
                         <li sec:authorize="hasAnyAuthority('ROLE_BUSINESS', 'ROLE_ENTREPRENEUR')">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
+                        <li><a class="dropdown-item" th:href="@{/saved}">Saved</a></li>
                         <li><a class="dropdown-item" href="#">Coming Soon...</a></li>
                     </ul>
                 </li>
@@ -114,20 +115,6 @@
         <div th:if="${products.isEmpty()}">
             <p class="text-muted text-center">No products available at the moment.</p>
         </div>
-<!--        <div th:each="product : ${products}" class="listing-card d-flex align-items-center">-->
-
-<!--            <div class="me-3">-->
-<!--                <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"-->
-<!--                     style="max-width: 150px; border-radius: 10px;">-->
-<!--            </div>-->
-<!--            <div class="listing-info">-->
-<!--                <h5 th:text="${product.productName}"></h5>-->
-<!--                <a th:href="@{/product-postings/{id}(id=${product.id})}" class="stretched-link"></a>-->
-<!--                <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>-->
-<!--                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>-->
-<!--                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div th:each="product : ${products}" class="listing-card d-flex align-items-center">
             <div class="me-3">
@@ -143,7 +130,30 @@
                 <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>
             </div>
         </div>
+<!--        <div th:each="product : ${products}" class="listing-card d-flex align-items-center position-relative">-->
+<!--            <div class="me-3">-->
+<!--                <a th:href="@{/product-postings/{id}(id=${product.id})}">-->
+<!--                    <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"-->
+<!--                         style="max-width: 150px; border-radius: 10px;">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="listing-info">-->
+<!--                <h5><a th:href="@{/product-postings/{id}(id=${product.id})}" th:text="${product.productName}"></a></h5>-->
+<!--                <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>-->
+<!--                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>-->
+<!--                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>-->
 
+<!--                &lt;!&ndash; ✅ Like Button & Count &ndash;&gt;-->
+<!--                <div class="d-flex align-items-center">-->
+<!--                    <button class="btn btn-outline-danger like-btn" th:data-product-id="${product.id}">-->
+<!--                        ❤️ <span th:text="${product.likeCount != null ? product.likeCount : 0}">0</span>-->
+<!--                    </button>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; ✅ Comments Link &ndash;&gt;-->
+<!--                <p><a th:href="@{/product-postings/{id}/comments(id=${product.id})}">View Comments</a></p>-->
+<!--            </div>-->
+<!--        </div>-->
 
     </div>
 
@@ -155,17 +165,6 @@
             <div th:if="${jobPostings.isEmpty()}">
                 <p class="text-muted text-center">No job postings available.</p>
             </div>
-<!--            <div th:each="job : ${jobPostings}" class="listing-card">-->
-
-<!--                <div class="listing-info">-->
-<!--                    <h5 th:text="${job.jobTitle}"></h5>-->
-<!--                    <a th:href="@{/job-postings/{id}(id=${job.id})}" class="stretched-link"></a>-->
-<!--                    <p><strong>Location:</strong> <span th:text="${job.location}"></span></p>-->
-<!--                    <p><strong>Employment Type:</strong> <span th:text="${job.employmentType}"></span></p>-->
-<!--                    <p><strong>Salary:</strong> $<span th:text="${job.salary}"></span></p>-->
-<!--                    <p><strong>Skills Required:</strong> <span th:text="${job.requiredSkills}"></span></p>-->
-<!--                </div>-->
-<!--            </div>-->
 
             <div th:each="job : ${jobPostings}" class="listing-card">
                 <div class="listing-info">
@@ -177,7 +176,6 @@
                 </div>
             </div>
 
-
         </div>
 
         <!-- ✅ Projects Section (Initially Hidden) -->
@@ -186,16 +184,6 @@
             <div th:if="${projectPostings.isEmpty()}">
                 <p class="text-muted text-center">No project postings available.</p>
             </div>
-<!--            <div th:each="project : ${projectPostings}" class="listing-card">-->
-
-<!--                <div class="listing-info">-->
-<!--                    <h5 th:text="${project.projectTitle}"></h5>-->
-<!--                    <a th:href="@{/project-postings/{id}(id=${project.id})}" class="stretched-link"></a>-->
-<!--                    <p><strong>Budget:</strong> $<span th:text="${project.budget}"></span></p>-->
-<!--                    <p><strong>Deadline:</strong> <span th:text="${#temporals.format(project.deadline, 'yyyy-MM-dd')}"></span></p>-->
-<!--                    <p><strong>Skills Required:</strong> <span th:text="${project.requiredSkills}"></span></p>-->
-<!--                </div>-->
-<!--            </div>-->
 
             <div th:each="project : ${projectPostings}" class="listing-card">
                 <div class="listing-info">
@@ -205,7 +193,6 @@
                     <p><strong>Skills Required:</strong> <span th:text="${project.requiredSkills}"></span></p>
                 </div>
             </div>
-
 
         </div>
     </div>
@@ -235,14 +222,14 @@
         clickedButton.classList.add("btn-primary", "active");
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        let buttons = document.querySelectorAll(".toggle-bar button");
-        buttons.forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.stopPropagation(); // Prevents click from reaching parent elements
-            });
-        });
-    });
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     let buttons = document.querySelectorAll(".toggle-bar button");
+    //     buttons.forEach(button => {
+    //         button.addEventListener("click", function (event) {
+    //             event.stopPropagation(); // Prevents click from reaching parent elements
+    //         });
+    //     });
+    // });
 </script>
 </body>
 </html>
