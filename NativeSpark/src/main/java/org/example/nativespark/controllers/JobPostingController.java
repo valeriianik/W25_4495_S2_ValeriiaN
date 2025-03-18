@@ -6,6 +6,9 @@ import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.JobPostingRepository;
 import org.example.nativespark.repositories.BusinessUserRepository;
 import org.example.nativespark.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -109,5 +112,20 @@ public class JobPostingController {
         }
 
         return "redirect:/my_postings";  // Redirect after successful update
+    }
+
+    @GetMapping("/{id}")
+    public String viewJobDetails(@PathVariable Long id, Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login"; // Redirect to login if not authenticated
+        }
+
+        Optional<JobPosting> job = jobPostingRepository.findById(id);
+        if (job.isEmpty()) {
+            return "redirect:/?error=JobNotFound"; // Redirect if job is not found
+        }
+
+        model.addAttribute("job", job.get());
+        return "job-details"; // Load job details Thymeleaf template
     }
 }

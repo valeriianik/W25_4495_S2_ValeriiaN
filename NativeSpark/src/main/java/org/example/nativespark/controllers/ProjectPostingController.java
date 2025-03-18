@@ -6,6 +6,7 @@ import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.BusinessUserRepository;
 import org.example.nativespark.repositories.ProjectPostingRepository;
 import org.example.nativespark.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +109,21 @@ public class ProjectPostingController {
         }
 
         return "redirect:/my_postings";
+    }
+
+
+    @GetMapping("/{id}")
+    public String viewProjectDetails(@PathVariable Long id, Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login"; // Redirect to login if not authenticated
+        }
+
+        Optional<ProjectPosting> project = projectPostingRepository.findById(id);
+        if (project.isEmpty()) {
+            return "redirect:/?error=ProjectNotFound"; // Redirect if project is not found
+        }
+
+        model.addAttribute("project", project.get());
+        return "project-details"; // Load project details Thymeleaf template
     }
 }

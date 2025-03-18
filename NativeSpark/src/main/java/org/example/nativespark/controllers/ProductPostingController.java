@@ -6,6 +6,7 @@ import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.ProductRepository;
 import org.example.nativespark.repositories.EntrepreneurUserRepository;
 import org.example.nativespark.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -138,6 +139,21 @@ public class ProductPostingController {
         }
 
         return "redirect:/my_postings";
+    }
+
+    @GetMapping("/{id}")
+    public String viewProductDetails(@PathVariable Long id, Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login"; // Redirect to login page if the user is not authenticated
+        }
+
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            return "redirect:/?error=ProductNotFound"; // Redirect to home page if the product is not found
+        }
+
+        model.addAttribute("product", product.get());
+        return "product-details"; // Load the product details Thymeleaf template
     }
 }
 
