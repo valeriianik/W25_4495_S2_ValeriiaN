@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase - NativeSpark</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .navbar-custom {
+            background-color: rgba(2, 55, 30, 0.9) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-custom {
+            background-color: #014017;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1rem;
+            margin-top: auto;
+        }
+
+        .purchase-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-dark-green {
+            background-color: #014017;
+            border-color: #014017;
+            color: white;
+        }
+
+        .btn-dark-green:hover {
+            background-color: #02371e;
+            border-color: #02371e;
+        }
+
+        .seller-info {
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .purchase-details {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">NativeSpark</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/account}">My Account</a></li>
+
+                <!-- Dropdown Menu -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
+                        Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
+                        <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
+                        <li sec:authorize="hasAnyAuthority('ROLE_BUSINESS', 'ROLE_ENTREPRENEUR')">
+                            <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/saved}">Saved</a></li>
+                        <li><a class="dropdown-item" href="#">Coming Soon...</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Login</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ✅ Purchase Container -->
+<div class="container">
+    <div class="row purchase-container">
+
+        <!-- ✅ Seller Information (Left Side) -->
+        <div class="col-md-4 seller-info">
+            <h4>Seller Information</h4>
+            <p><strong>Name:</strong> <span th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>
+
+
+            <!-- ✅ Back to Product Button -->
+            <a th:href="@{/product-postings/{id}(id=${product.id})}" class="btn btn-secondary mt-3">Back to Product</a>
+        </div>
+
+        <!-- ✅ Purchase Form (Right Side) -->
+        <div class="col-md-8 purchase-details">
+            <h3 class="text-center">Complete Your Purchase</h3>
+            <hr>
+
+            <form th:action="@{/purchase/confirm}" method="post">
+                <input type="hidden" name="productId" th:value="${product.id}"/>
+                <input type="hidden" name="sellerId" th:value="${product.entrepreneur.user.userId}"/>
+
+                <!-- ✅ Product Information -->
+                <div class="mb-3">
+                    <label><strong>Product:</strong></label>
+                    <p th:text="${product.productName}"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label><strong>Price:</strong></label>
+                    <p>$<span th:text="${product.price}"></span></p>
+                </div>
+
+                <!-- ✅ Quantity Selection -->
+                <div class="mb-3">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" class="form-control" name="quantity" id="quantity" min="1" th:max="${product.quantity}" value="1" required>
+                </div>
+
+                <!-- ✅ Shipping Information -->
+                <h5>Shipping Information</h5>
+                <div class="mb-3">
+                    <label for="country">Country:</label>
+                    <input type="text" class="form-control" name="country" id="country" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="city">City:</label>
+                    <input type="text" class="form-control" name="city" id="city" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="province">Province:</label>
+                    <input type="text" class="form-control" name="province" id="province" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="streetAddress">Street Address:</label>
+                    <input type="text" class="form-control" name="streetAddress" id="streetAddress" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="postalCode">Postal Code:</label>
+                    <input type="text" class="form-control" name="postalCode" id="postalCode" required>
+                </div>
+
+                <!-- ✅ Phone Number -->
+                <div class="mb-3">
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" required>
+                </div>
+
+                <!-- ✅ Payment Information -->
+                <h5>Payment Details</h5>
+                <div class="mb-3">
+                    <label for="cardNumber">Card Number:</label>
+                    <input type="text" class="form-control" name="cardNumber" id="cardNumber" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="expiryDate">Expiration Date:</label>
+                    <input type="text" class="form-control" name="expiryDate" id="expiryDate" placeholder="MM/YY" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="cvv">CVV:</label>
+                    <input type="text" class="form-control" name="cvv" id="cvv" required>
+                </div>
+
+                <!-- ✅ Submit Purchase -->
+                <button type="submit" class="btn btn-dark-green w-100">Confirm Purchase</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-custom">
+    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
+

@@ -109,28 +109,14 @@
         <button class="btn btn-outline-primary" onclick="showSection('projects', this)">Projects</button>
     </div>
 
-    <!-- ✅ Always Show Products -->
-    <div id="productsSection">
-        <h3 class="mt-4">Products</h3>
-        <div th:if="${products.isEmpty()}">
-            <p class="text-muted text-center">No products available at the moment.</p>
-        </div>
+<!--    &lt;!&ndash; ✅ Always Show Products &ndash;&gt;-->
+<!--    <div id="productsSection">-->
+<!--        <h3 class="mt-4">Products</h3>-->
+<!--        <div th:if="${products.isEmpty()}">-->
+<!--            <p class="text-muted text-center">No products available at the moment.</p>-->
+<!--        </div>-->
 
-        <div th:each="product : ${products}" class="listing-card d-flex align-items-center">
-            <div class="me-3">
-                <a th:href="@{/product-postings/{id}(id=${product.id})}">
-                    <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"
-                         style="max-width: 150px; border-radius: 10px;">
-                </a>
-            </div>
-            <div class="listing-info">
-                <h5><a th:href="@{/product-postings/{id}(id=${product.id})}" th:text="${product.productName}"></a></h5>
-                <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
-                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>
-                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>
-            </div>
-        </div>
-<!--        <div th:each="product : ${products}" class="listing-card d-flex align-items-center position-relative">-->
+<!--        <div th:each="product : ${products}" class="listing-card d-flex align-items-center">-->
 <!--            <div class="me-3">-->
 <!--                <a th:href="@{/product-postings/{id}(id=${product.id})}">-->
 <!--                    <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"-->
@@ -143,19 +129,50 @@
 <!--                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>-->
 <!--                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>-->
 
-<!--                &lt;!&ndash; ✅ Like Button & Count &ndash;&gt;-->
-<!--                <div class="d-flex align-items-center">-->
-<!--                    <button class="btn btn-outline-danger like-btn" th:data-product-id="${product.id}">-->
-<!--                        ❤️ <span th:text="${product.likeCount != null ? product.likeCount : 0}">0</span>-->
-<!--                    </button>-->
-<!--                </div>-->
+<!--                &lt;!&ndash;                &lt;!&ndash; ✅ Like Button & Count &ndash;&gt;&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="d-flex align-items-center">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <button class="btn btn-outline-danger like-btn" th:data-product-id="${product.id}">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        ❤️ <span th:text="${product.likeCount != null ? product.likeCount : 0}">0</span>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
 
-<!--                &lt;!&ndash; ✅ Comments Link &ndash;&gt;-->
-<!--                <p><a th:href="@{/product-postings/{id}/comments(id=${product.id})}">View Comments</a></p>-->
+<!--                &lt;!&ndash;                &lt;!&ndash; ✅ Comments Link &ndash;&gt;&ndash;&gt;-->
+<!--                &lt;!&ndash;                <p><a th:href="@{/product-postings/{id}/comments(id=${product.id})}">View Comments</a></p>&ndash;&gt;-->
 <!--            </div>-->
 <!--        </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- ✅ Always Show Products -->
+    <div id="productsSection">
+        <h3 class="mt-4">Products</h3>
+        <div th:if="${products.isEmpty()}">
+            <p class="text-muted text-center">No products available at the moment.</p>
+        </div>
+
+        <div th:each="product : ${products}"
+             th:if="${loggedInUserId == null or product.entrepreneur.user.userId != loggedInUserId}"
+             class="listing-card d-flex align-items-center">
+
+            <div class="me-3">
+                <a th:href="@{/product-postings/{id}(id=${product.id})}">
+                    <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"
+                         style="max-width: 150px; border-radius: 10px;">
+                </a>
+            </div>
+
+            <div class="listing-info">
+                <h5><a th:href="@{/product-postings/{id}(id=${product.id})}" th:text="${product.productName}"></a></h5>
+                <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
+                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>
+                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>
+            </div>
+
+        </div>
 
     </div>
+
+
 
     <!-- ✅ Show Jobs & Projects for Entrepreneurs Only -->
     <div sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
