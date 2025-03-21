@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+
     <title>Home - NativeSpark</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -59,6 +61,11 @@
             background-color: #02371e;
             border-color: #02371e;
         }
+
+        button span {
+            transition: color 0.3s ease;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -84,6 +91,9 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
+                        <li sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
+                            <a class="dropdown-item" th:href="@{/buyers}">Buyers of My Products</a>
+                        </li>
                         <li sec:authorize="hasAnyAuthority('ROLE_BUSINESS', 'ROLE_ENTREPRENEUR')">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
@@ -109,40 +119,6 @@
         <button class="btn btn-outline-primary" onclick="showSection('projects', this)">Projects</button>
     </div>
 
-<!--    &lt;!&ndash; ✅ Always Show Products &ndash;&gt;-->
-<!--    <div id="productsSection">-->
-<!--        <h3 class="mt-4">Products</h3>-->
-<!--        <div th:if="${products.isEmpty()}">-->
-<!--            <p class="text-muted text-center">No products available at the moment.</p>-->
-<!--        </div>-->
-
-<!--        <div th:each="product : ${products}" class="listing-card d-flex align-items-center">-->
-<!--            <div class="me-3">-->
-<!--                <a th:href="@{/product-postings/{id}(id=${product.id})}">-->
-<!--                    <img th:src="@{${product.imagePath}}" class="img-fluid" alt="Product Image"-->
-<!--                         style="max-width: 150px; border-radius: 10px;">-->
-<!--                </a>-->
-<!--            </div>-->
-<!--            <div class="listing-info">-->
-<!--                <h5><a th:href="@{/product-postings/{id}(id=${product.id})}" th:text="${product.productName}"></a></h5>-->
-<!--                <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>-->
-<!--                <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>-->
-<!--                <p><strong>Description:</strong> <span th:text="${product.productDescription}"></span></p>-->
-
-<!--                &lt;!&ndash;                &lt;!&ndash; ✅ Like Button & Count &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <div class="d-flex align-items-center">&ndash;&gt;-->
-<!--                &lt;!&ndash;                    <button class="btn btn-outline-danger like-btn" th:data-product-id="${product.id}">&ndash;&gt;-->
-<!--                &lt;!&ndash;                        ❤️ <span th:text="${product.likeCount != null ? product.likeCount : 0}">0</span>&ndash;&gt;-->
-<!--                &lt;!&ndash;                    </button>&ndash;&gt;-->
-<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
-
-<!--                &lt;!&ndash;                &lt;!&ndash; ✅ Comments Link &ndash;&gt;&ndash;&gt;-->
-<!--                &lt;!&ndash;                <p><a th:href="@{/product-postings/{id}/comments(id=${product.id})}">View Comments</a></p>&ndash;&gt;-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
     <!-- ✅ Always Show Products -->
     <div id="productsSection">
         <h3 class="mt-4">Products</h3>
@@ -153,6 +129,15 @@
         <div th:each="product : ${products}"
              th:if="${loggedInUserId == null or product.entrepreneur.user.userId != loggedInUserId}"
              class="listing-card d-flex align-items-center">
+
+            <span sec:authorize="isAuthenticated()">
+
+                <button class="btn btn-light border" th:attr="data-type='product', data-id=${product.id}" onclick="toggleSave(this)">
+                    <span th:text="${product.savedByUsers.contains(loggedInUser)} ? '💖' : '🤍'"
+                          th:class="${product.savedByUsers.contains(loggedInUser)} ? 'text-danger' : 'text-secondary'"></span>
+                </button>
+
+            </span>
 
             <div class="me-3">
                 <a th:href="@{/product-postings/{id}(id=${product.id})}">
@@ -184,6 +169,17 @@
             </div>
 
             <div th:each="job : ${jobPostings}" class="listing-card">
+                <span sec:authorize="isAuthenticated()">
+
+                    <button class="btn btn-light border" th:attr="data-type='job', data-id=${job.id}" onclick="toggleSave(this)">
+                        <span th:text="${job.savedByUsers.contains(loggedInUser)} ? '💖' : '🤍'"
+                          th:class="${job.savedByUsers.contains(loggedInUser)} ? 'text-danger' : 'text-secondary'"></span>
+                    </button>
+
+                </span>
+
+
+
                 <div class="listing-info">
                     <h5><a th:href="@{/job-postings/{id}(id=${job.id})}" th:text="${job.jobTitle}"></a></h5>
                     <p><strong>Location:</strong> <span th:text="${job.location}"></span></p>
@@ -203,6 +199,15 @@
             </div>
 
             <div th:each="project : ${projectPostings}" class="listing-card">
+                <span sec:authorize="isAuthenticated()">
+
+                    <button class="btn btn-light border" th:attr="data-type='project', data-id=${project.id}" onclick="toggleSave(this)">
+                        <span th:text="${project.savedByUsers.contains(loggedInUser)} ? '💖' : '🤍'"
+                              th:class="${project.savedByUsers.contains(loggedInUser)} ? 'text-danger' : 'text-secondary'"></span>
+                    </button>
+
+                </span>
+
                 <div class="listing-info">
                     <h5><a th:href="@{/project-postings/{id}(id=${project.id})}" th:text="${project.projectTitle}"></a></h5>
                     <p><strong>Budget:</strong> $<span th:text="${project.budget}"></span></p>
@@ -239,14 +244,31 @@
         clickedButton.classList.add("btn-primary", "active");
     }
 
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     let buttons = document.querySelectorAll(".toggle-bar button");
-    //     buttons.forEach(button => {
-    //         button.addEventListener("click", function (event) {
-    //             event.stopPropagation(); // Prevents click from reaching parent elements
-    //         });
-    //     });
-    // });
+    function toggleSave(button) {
+        const id = button.getAttribute("data-id");
+        const type = button.getAttribute("data-type");
+        const url = `/${type}/${id}/toggle-save`;
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute("content")
+            }
+        }).then(res => res.text())
+            .then(status => {
+                const heart = button.querySelector("span");
+                if (status === "saved") {
+                    heart.textContent = "💖";
+                    heart.classList.remove("text-secondary");
+                    heart.classList.add("text-danger");
+                } else {
+                    heart.textContent = "🤍";
+                    heart.classList.remove("text-danger");
+                    heart.classList.add("text-secondary");
+                }
+            });
+    }
+
 </script>
 </body>
 </html>

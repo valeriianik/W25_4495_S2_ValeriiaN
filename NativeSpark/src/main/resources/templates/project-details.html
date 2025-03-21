@@ -106,6 +106,9 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
+                        <li sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
+                            <a class="dropdown-item" th:href="@{/buyers}">Buyers of My Products</a>
+                        </li>
                         <li sec:authorize="hasAnyAuthority('ROLE_BUSINESS', 'ROLE_ENTREPRENEUR')">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>

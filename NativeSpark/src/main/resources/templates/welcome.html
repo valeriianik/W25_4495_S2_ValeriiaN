@@ -132,8 +132,9 @@
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" th:href="@{/subscription}">Subscription</a></li>
                         <li><a class="dropdown-item" th:href="@{/my_orders}">My Orders</a></li>
-<!--                        <li><a class="dropdown-item" th:href="@{/my_postings}">My Postings</a></li>-->
-                        <!-- ✅ Show "My Postings" only for Business and Entrepreneur users -->
+                        <li sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
+                            <a class="dropdown-item" th:href="@{/buyers}">Buyers of My Products</a>
+                        </li>
                         <li th:if="${#authentication.authorities.?[authority == 'ROLE_BUSINESS' or authority == 'ROLE_ENTREPRENEUR'].size() > 0}">
                             <a class="dropdown-item" th:href="@{/my_postings}">My Postings</a>
                         </li>
