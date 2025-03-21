@@ -34,11 +34,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model, Authentication authentication) {
-        // ✅ Always Fetch Products
         List<Product> products = productRepository.findAll();
         model.addAttribute("products", products);
 
-        // ✅ Set Default UserType for Guests
+        Long loggedInUserId = null;
         String userType = "GUEST";
 
         if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
@@ -48,7 +47,10 @@ public class HomeController {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 userType = user.getUserType();
+                loggedInUserId = user.getUserId(); // ✅ Get logged-in user's ID
                 model.addAttribute("userType", userType);
+                model.addAttribute("loggedInUserId", loggedInUserId); // ✅ Pass it to the view
+                model.addAttribute("loggedInUser", user);
 
                 if ("ENTREPRENEUR".equalsIgnoreCase(userType)) {
                     model.addAttribute("jobPostings", jobPostingRepository.findAll());
@@ -63,9 +65,7 @@ public class HomeController {
 
     @GetMapping("/about")
     public String about() {
-
         return "welcome";
     }
-
 }
 
