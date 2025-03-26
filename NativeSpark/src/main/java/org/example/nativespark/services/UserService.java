@@ -1,5 +1,6 @@
 package org.example.nativespark.services;
 
+import org.example.nativespark.entities.Cart;
 import org.example.nativespark.entities.Subscription;
 import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.*;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -30,10 +32,11 @@ public class UserService implements UserDetailsService {
     private final SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, SubscriptionRepository subscriptionRepository) {
+    public UserService(UserRepository userRepository, CartRepository cartRepository, PasswordEncoder passwordEncoder, SubscriptionRepository subscriptionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.subscriptionRepository = subscriptionRepository;
+        this.cartRepository = cartRepository;
     }
 
     public User createUser(String email, String password, String userType) {
@@ -43,6 +46,9 @@ public class UserService implements UserDetailsService {
 
         User user = new User(email, passwordEncoder.encode(password), userType);
         user = userRepository.save(user);
+
+        Cart cart = new Cart(user);
+        cartRepository.save(cart);
 
         // Assign a free subscription
         Subscription subscription = new Subscription(user, "Free");

@@ -13,6 +13,7 @@ public class Cart {
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
+    public Cart(){}
     public Cart(User user){
         this.user = user;
     }

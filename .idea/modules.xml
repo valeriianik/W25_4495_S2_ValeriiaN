@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/NativeSpark/NativeSpark.iml" filepath="$PROJECT_DIR$/NativeSpark/NativeSpark.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/W25_4495_S2_ValeriiaN.iml" filepath="$PROJECT_DIR$/.idea/W25_4495_S2_ValeriiaN.iml" />
     </modules>
   </component>
