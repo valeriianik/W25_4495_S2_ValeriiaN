@@ -30,8 +30,15 @@ public class CartItem {
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getId() {
         return id;
+    }
+
+    public void setQuantity(int quantity){
+        this.quantity = quantity;
+    }
+
+    public int getQuantity(){
+        return this.quantity;
     }
 }

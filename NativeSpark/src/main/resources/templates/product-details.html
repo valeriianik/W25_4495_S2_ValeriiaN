@@ -308,6 +308,12 @@
                th:href="@{/purchase/{id}(id=${product.id})}"
                class="btn btn-success">Buy</a>
 
+            <form th:if="${product.quantity > 0}" action="/cart/add" method="post">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <input type="number" name="quantity" value="1" min="1">
+                <button type="submit">Add to Cart</button>
+            </form>
+
             <!-- ✅ Show "Coming Soon" Message (If Quantity is 0) -->
             <p th:if="${product.quantity == 0}" class="text-danger fw-bold">Coming Soon...</p>
 

@@ -2,6 +2,7 @@ package org.example.nativespark.controllers;
 
 import org.example.nativespark.entities.Cart;
 import org.example.nativespark.entities.CartItem;
+import org.example.nativespark.entities.Product;
 import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.CartItemRepository;
 import org.example.nativespark.repositories.CartRepository;
@@ -10,7 +11,7 @@ import org.example.nativespark.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,6 @@ public class CartController {
             // Handle case where the user doesn't have a cart
             throw new RuntimeException("No cart found for the user");
         }
-
         Cart cart = cartOptional.get();
 
         // Fetch cart items for the cart
@@ -61,4 +61,49 @@ public class CartController {
         model.addAttribute("cartItems", cartItems);
         return "cart";
     }
-}
+
+    @PostMapping("/cart/add")
+    @ResponseBody
+    public String addToCart(@RequestParam  Long productId, @RequestParam int quantity, Authentication authentication) {
+        // Check if the user is authenticated
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("❌ No authenticated user found, redirecting to login.");
+            return "redirect:/login";
+        }
+
+        String email = authentication.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new RuntimeException("No user found for the user");
+        }
+        User user = userOptional.get();
+
+        // Fetch the user's cart (if it doesn't exist, create a new one)
+        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+        if (cartOptional.isEmpty()) {
+            // Handle case where the user doesn't have a cart
+            throw new RuntimeException("No cart found for the user");
+        }
+        Cart cart = cartOptional.get();
+
+        // Fetch the product to add to the cart
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Check if the item is already in the cart
+        CartItem existingItem = cartItemRepository.findByCartAndProduct(cart, product).orElse(null);
+
+        if (existingItem != null) {
+            // If the product is already in the cart, update the quantity
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            cartItemRepository.save(existingItem);
+            return "Product quantity updated";
+        } else {
+            // If the product isn't in the cart, create a new cart item
+            CartItem newItem = new CartItem(cart, product, quantity);
+            cartItemRepository.save(newItem);
+            return "Product added to cart";
+        }
+
+    }}
+
