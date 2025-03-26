@@ -91,6 +91,9 @@ public class User implements UserDetails {
     @Column(name = "user_type", nullable = false)
     private String userType;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
     public User() {}
 
     public User(String email, String password, String userType) {
