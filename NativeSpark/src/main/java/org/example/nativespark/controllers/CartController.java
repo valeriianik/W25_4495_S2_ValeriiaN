@@ -1,14 +1,8 @@
 package org.example.nativespark.controllers;
 
-import org.example.nativespark.entities.Cart;
-import org.example.nativespark.entities.CartItem;
-import org.example.nativespark.entities.Product;
-import org.example.nativespark.entities.User;
+import org.example.nativespark.entities.*;
 import org.example.nativespark.entities.dtos.CartItemRequest;
-import org.example.nativespark.repositories.CartItemRepository;
-import org.example.nativespark.repositories.CartRepository;
-import org.example.nativespark.repositories.ProductRepository;
-import org.example.nativespark.repositories.UserRepository;
+import org.example.nativespark.repositories.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class CartController {
@@ -25,14 +22,17 @@ public class CartController {
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final TransactionRepository transactionRepository;
 
 
     public CartController(CartRepository cartRepository, UserRepository userRepository,
-                          ProductRepository productRepository, CartItemRepository cartItemRepository) {
+                          ProductRepository productRepository, CartItemRepository cartItemRepository,
+                          TransactionRepository transactionRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.cartItemRepository = cartItemRepository;
+        this.transactionRepository = transactionRepository;
     }
 
 
@@ -161,6 +161,7 @@ public class CartController {
         return "cart-summary";
     }
 
+
     @GetMapping("/cart/checkout")
     public String getCheckout() {
         return "cart-checkout";
@@ -200,8 +201,36 @@ public class CartController {
         }
         Cart cart = cartOptional.get();
         List<CartItem> cartItems = cart.getCartItems();
+        // Create a new transaction and set the shipping details
+        Transaction transaction = Transaction.builder().buyer(user).country(country).city(city).province(province)
+                .streetAddress(streetAddress).postalCode(postalCode).phoneNumber(phoneNumber).status("SUCCESS")
+                .transactionDate(LocalDateTime.now()).build();
 
+        // Calculate total price and add cart items to the transaction
+        double totalPrice = 0.0;
+        Set<Product> productsInTransaction = new HashSet<>();
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            int quantity = cartItem.getQuantity();
+            double productTotal = product.getPrice() * quantity;
+            totalPrice += productTotal;
+            productsInTransaction.add(product);
+        }
 
-        return "redirect:/home";
+        // Set the products and total price for the transaction
+        transaction.setProducts(productsInTransaction);
+        transaction.setQuantity(cartItems.size());
+        transaction.setTotalPrice(totalPrice);
+
+        // Save the transaction
+        transactionRepository.save(transaction);
+
+        // Clear the cart items after successful transaction
+        cartItems.clear();  // Remove all items from the cart
+        cartRepository.save(cart);  // Save the cart with no items
+
+        model.addAttribute("orderNumber", transaction.getId());
+
+        return "cart-success";
     }
 }
