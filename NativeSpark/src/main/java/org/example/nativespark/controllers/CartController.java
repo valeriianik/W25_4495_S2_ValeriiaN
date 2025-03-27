@@ -1,13 +1,17 @@
 package org.example.nativespark.controllers;
 
+import org.apache.coyote.Response;
 import org.example.nativespark.entities.Cart;
 import org.example.nativespark.entities.CartItem;
 import org.example.nativespark.entities.Product;
 import org.example.nativespark.entities.User;
+import org.example.nativespark.entities.dtos.CartItemRequest;
 import org.example.nativespark.repositories.CartItemRepository;
 import org.example.nativespark.repositories.CartRepository;
 import org.example.nativespark.repositories.ProductRepository;
 import org.example.nativespark.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,11 +68,10 @@ public class CartController {
 
     @PostMapping("/cart/add")
     @ResponseBody
-    public String addToCart(@RequestParam  Long productId, @RequestParam int quantity, Authentication authentication) {
+    public ResponseEntity<String> addToCart(@RequestBody CartItemRequest cartItemRequest, Authentication authentication) {
         // Check if the user is authenticated
-        if (authentication == null || !authentication.isAuthenticated()) {
-            System.out.println("❌ No authenticated user found, redirecting to login.");
-            return "redirect:/login";
+        if (authentication== null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
 
         String email = authentication.getName();
@@ -87,7 +90,7 @@ public class CartController {
         Cart cart = cartOptional.get();
 
         // Fetch the product to add to the cart
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findById(cartItemRequest.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // Check if the item is already in the cart
@@ -95,15 +98,14 @@ public class CartController {
 
         if (existingItem != null) {
             // If the product is already in the cart, update the quantity
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            existingItem.setQuantity(existingItem.getQuantity() + cartItemRequest.getQuantity());
             cartItemRepository.save(existingItem);
-            return "Product quantity updated";
+            return ResponseEntity.ok("Product updated in cart");
         } else {
             // If the product isn't in the cart, create a new cart item
-            CartItem newItem = new CartItem(cart, product, quantity);
+            CartItem newItem = new CartItem(cart, product, cartItemRequest.getQuantity());
             cartItemRepository.save(newItem);
-            return "Product added to cart";
+            return ResponseEntity.ok("Product added to cart");
         }
-
     }}
 
