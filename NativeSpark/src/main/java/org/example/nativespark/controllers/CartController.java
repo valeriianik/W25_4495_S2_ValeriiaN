@@ -21,13 +21,14 @@ import java.util.Optional;
 
 @Controller
 public class CartController {
-    private  final CartRepository cartRepository;
+    private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
 
-    public CartController(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository, CartItemRepository cartItemRepository){
+    public CartController(CartRepository cartRepository, UserRepository userRepository,
+                          ProductRepository productRepository, CartItemRepository cartItemRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
@@ -36,7 +37,7 @@ public class CartController {
 
 
     @GetMapping("/cart")
-    public String cart(Model model, Authentication authentication){
+    public String cart(Model model, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             System.out.println("❌ No authenticated user found, redirecting to login.");
             return "redirect:/login";
@@ -44,7 +45,7 @@ public class CartController {
 
         String email = authentication.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new RuntimeException("No user found for the user");
         }
         User user = userOptional.get();
@@ -66,15 +67,16 @@ public class CartController {
 
     @PostMapping("/cart/add")
     @ResponseBody
-    public ResponseEntity<String> addToCart(@RequestBody CartItemRequest cartItemRequest, Authentication authentication) {
+    public ResponseEntity<String> addToCart(@RequestBody CartItemRequest cartItemRequest,
+                                            Authentication authentication) {
         // Check if the user is authenticated
-        if (authentication== null || !authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
 
         String email = authentication.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new RuntimeException("No user found for the user");
         }
         User user = userOptional.get();
@@ -106,6 +108,7 @@ public class CartController {
             return ResponseEntity.ok("Product added to cart");
         }
     }
+
     @PostMapping("/cart/updateQuantity")
     public String updateQuantity(@RequestParam Long cartItemId, @RequestParam int quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
@@ -114,6 +117,7 @@ public class CartController {
         cartItemRepository.save(cartItem);
         return "redirect:/cart";
     }
+
     @PostMapping("/cart/removeItem")
     public String removeItem(@RequestParam Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
@@ -123,7 +127,8 @@ public class CartController {
     }
 
     @GetMapping("/cart/summary")
-    public String checkout(Model model, Authentication authentication){
+    public String summary(
+            Model model, Authentication authentication) {
         // Check if the user is authenticated
         if (authentication == null || !authentication.isAuthenticated()) {
             System.out.println("❌ No authenticated user found, redirecting to login.");
@@ -132,7 +137,7 @@ public class CartController {
 
         String email = authentication.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new RuntimeException("No user found for the user");
         }
         User user = userOptional.get();
@@ -146,7 +151,8 @@ public class CartController {
         Cart cart = cartOptional.get();
         List<CartItem> cartItems = cart.getCartItems();
         int totalQuantity = cartItems.stream().mapToInt(CartItem::getQuantity).sum();
-        double totalPrice = cartItems.stream().mapToDouble(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity()).sum();
+        double totalPrice = cartItems.stream()
+                .mapToDouble(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity()).sum();
 
 
         model.addAttribute("cartItems", cartItems);
@@ -155,4 +161,47 @@ public class CartController {
         return "cart-summary";
     }
 
+    @GetMapping("/cart/checkout")
+    public String getCheckout() {
+        return "cart-checkout";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String completeCheckout(
+            @RequestParam String country,
+            @RequestParam String city,
+            @RequestParam String province,
+            @RequestParam String streetAddress,
+            @RequestParam String postalCode,
+            @RequestParam String phoneNumber,
+            @RequestParam String cardNumber,
+            @RequestParam String expiryDate,
+            @RequestParam String cvv,
+            Model model, Authentication authentication) {
+
+        // Check if the user is authenticated
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("❌ No authenticated user found, redirecting to login.");
+            return "redirect:/login";
+        }
+
+        String email = authentication.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("No user found for the user");
+        }
+        User user = userOptional.get();
+
+        // Fetch the user's cart (if it doesn't exist, create a new one)
+        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+        if (cartOptional.isEmpty()) {
+            // Handle case where the user doesn't have a cart
+            throw new RuntimeException("No cart found for the user");
+        }
+        Cart cart = cartOptional.get();
+        List<CartItem> cartItems = cart.getCartItems();
+
+
+        return "redirect:/home";
+    }
 }
