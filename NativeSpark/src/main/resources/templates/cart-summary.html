@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="_csrf" th:content="${_csrf.token}"/>
 
     <title>Checkout - NativeSpark</title>
@@ -66,8 +66,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <strong>Total Price:</strong>
-                                        <p>$<span
-                                                th:text="${cartItem.getProduct().price * cartItem.quantity}"></span>
+                                        <p>$
+                                            <span th:text="${#numbers.formatCurrency(cartItem.getProduct().price * cartItem.quantity)}"/>
                                         </p>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                                     <p>$<span th:text="${totalPrice}"></span></p>
                                 </div>
                                 <div class="text-center">
-                                    <a th:href="@{/cart/checkout}" class="btn btn-dark-green">Proceed to Checkout</a>
+                                    <a class="btn btn-dark-green" th:href="@{/cart/checkout}">Proceed to Checkout</a>
                                 </div>
                             </div>
                         </div>
