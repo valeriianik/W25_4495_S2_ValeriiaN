@@ -27,6 +27,9 @@ public class Product {
     )
     private Set<User> savedByUsers = new HashSet<>();
 
+    @ManyToMany(mappedBy = "products") // 'products' is the field in the Transaction class
+    private Set<Transaction> transactions = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "entrepreneur_id", nullable = false)  // Links to EntrepreneurUser
     private EntrepreneurUser entrepreneur;

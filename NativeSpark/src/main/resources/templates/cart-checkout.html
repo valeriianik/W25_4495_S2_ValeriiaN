@@ -40,15 +40,8 @@
     <div class="container">
         <div class="row purchase-container">
 
-            <!-- ✅ Seller Information (Left Side) -->
-            <div class="col-md-4 seller-info">
-                <h4>Seller Information</h4>
-<!--                <p><strong>Name:</strong> <span-->
-<!--                 th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>-->
 
-            </div>
-
-            <form th:action="@{/purchase/confirm}" method="post">
+            <form th:action="@{/cart/checkout}" method="post">
                 <!-- ✅ Shipping Information -->
                 <h5>Shipping Information</h5>
                 <div class="mb-3">

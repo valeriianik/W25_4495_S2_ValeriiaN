@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "transactions")
@@ -21,14 +23,13 @@ public class Transaction {
     @JoinColumn(name = "buyer_id", nullable = false)
     private User buyer;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
-    private User seller;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
+    @ManyToMany
+    @JoinTable(
+            name = "transaction_product",  // Join table name
+            joinColumns = @JoinColumn(name = "transaction_id"),  // Foreign key for the Transaction
+            inverseJoinColumns = @JoinColumn(name = "product_id") // Foreign key for the Product
+    )
+    private Set<Product> products = new HashSet<>();
     private int quantity;
     private double totalPrice;
 

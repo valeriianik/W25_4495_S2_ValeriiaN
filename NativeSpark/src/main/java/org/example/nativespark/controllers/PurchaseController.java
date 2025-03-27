@@ -92,25 +92,25 @@ public class PurchaseController {
         productRepository.save(product);
 
         // ✅ Save transaction
-        Transaction transaction = Transaction.builder()
-                .buyer(buyer)
-                .seller(seller)
-                .product(product)
-                .quantity(quantity)
-                .totalPrice(product.getPrice() * quantity)
-                .country(country)
-                .city(city)
-                .province(province)
-                .streetAddress(streetAddress)
-                .postalCode(postalCode)
-                .phoneNumber(phoneNumber)
-                .status("SUCCESS")
-                .transactionDate(LocalDateTime.now())
-                .build();
+//        Transaction transaction = Transaction.builder()
+//                .buyer(buyer)
+//                .seller(seller)
+//                .product(product)
+//                .quantity(quantity)
+//                .totalPrice(product.getPrice() * quantity)
+//                .country(country)
+//                .city(city)
+//                .province(province)
+//                .streetAddress(streetAddress)
+//                .postalCode(postalCode)
+//                .phoneNumber(phoneNumber)
+//                .status("SUCCESS")
+//                .transactionDate(LocalDateTime.now())
+//                .build();
 
-        transactionRepository.save(transaction);
-
-        model.addAttribute("transactionId", transaction.getId());  // Pass order ID to Thymeleaf
+//        transactionRepository.save(transaction);
+//
+//        model.addAttribute("transactionId", transaction.getId());  // Pass order ID to Thymeleaf
         model.addAttribute("totalPrice", totalPrice);
         return "purchase-success";  // ✅ Redirect to success page
     }
