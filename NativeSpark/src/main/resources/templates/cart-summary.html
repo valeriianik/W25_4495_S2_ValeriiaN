@@ -43,8 +43,8 @@
             <!-- ✅ Seller Information (Left Side) -->
             <div class="col-md-4 seller-info">
                 <h4>Seller Information</h4>
-<!--                <p><strong>Name:</strong> <span-->
-<!--                 th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>-->
+                <!--                <p><strong>Name:</strong> <span-->
+                <!--                 th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>-->
 
             </div>
 
@@ -79,12 +79,12 @@
                             <div class="card-body">
                                 <h5 class="card-title">Summary</h5>
                                 <div class="mb-3">
-                                    <strong>Total Quantity:</strong>
-                                    <!--                                        <p th:text="${#numbers.formatDecimal(cartItems.stream().mapToInt(c -> c.quantity).sum(), 0, 'POINT', 0)}"></p>-->
+                                    <strong>Total Items:</strong>
+                                    <p th:text="${totalQuantity}"></p>
                                 </div>
                                 <div class="mb-3">
                                     <strong>Total Price:</strong>
-                                    <!--                                        <p>$<span th:text="${cartItems.stream().mapToDouble(c -> c.getProduct().price * c.quantity).sum()}"></span></p>-->
+                                    <p>$<span th:text="${totalPrice}"></span></p>
                                 </div>
                                 <div class="text-center">
                                     <a href="/checkout" class="btn btn-dark-green">Proceed to Checkout</a>

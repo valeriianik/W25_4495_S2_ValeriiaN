@@ -106,8 +106,23 @@ public class CartController {
             return ResponseEntity.ok("Product added to cart");
         }
     }
+    @PostMapping("/cart/updateQuantity")
+    public String updateQuantity(@RequestParam Long cartItemId, @RequestParam int quantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+        return "redirect:/cart";
+    }
+    @PostMapping("/cart/removeItem")
+    public String removeItem(@RequestParam Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+        cartItemRepository.delete(cartItem);
+        return "redirect:/cart";
+    }
 
-    @GetMapping("/cart/checkout")
+    @GetMapping("/cart/summary")
     public String checkout(Model model, Authentication authentication){
         // Check if the user is authenticated
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -130,8 +145,13 @@ public class CartController {
         }
         Cart cart = cartOptional.get();
         List<CartItem> cartItems = cart.getCartItems();
-        model.addAttribute("cartItems", cartItems);
+        int totalQuantity = cartItems.stream().mapToInt(CartItem::getQuantity).sum();
+        double totalPrice = cartItems.stream().mapToDouble(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity()).sum();
 
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("totalPrice", totalPrice);
         return "cart-summary";
     }
 
