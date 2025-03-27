@@ -11,10 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class CartController {
@@ -208,21 +207,30 @@ public class CartController {
 
         // Calculate total price and add cart items to the transaction
         double totalPrice = 0.0;
-        Set<Product> productsInTransaction = new HashSet<>();
+        List<TransactionProduct> productsInTransaction = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
             int quantity = cartItem.getQuantity();
             double productTotal = product.getPrice() * quantity;
             totalPrice += productTotal;
-            productsInTransaction.add(product);
+
+            // Create a TransactionProduct and set the properties
+            TransactionProduct transactionProduct = new TransactionProduct();
+            transactionProduct.setProduct(product);
+            transactionProduct.setQuantity(quantity);
+            transactionProduct.setPrice(product.getPrice());
+
+            // Add the TransactionProduct to the list of products in the transaction
+            productsInTransaction.add(transactionProduct);
+
+            // Set the transaction reference in TransactionProduct (bidirectional relationship)
+            transactionProduct.setTransaction(transaction);
         }
 
-        // Set the products and total price for the transaction
-        transaction.setProducts(productsInTransaction);
-        transaction.setQuantity(cartItems.size());
+        transaction.setTransactionProducts(productsInTransaction);
+        transaction.setQuantity(cartItems.size());  // Optional: total number of products
         transaction.setTotalPrice(totalPrice);
 
-        // Save the transaction
         transactionRepository.save(transaction);
 
         // Remove all items from the cart

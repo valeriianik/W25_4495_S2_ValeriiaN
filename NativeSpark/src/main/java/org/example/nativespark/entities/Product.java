@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,8 +28,8 @@ public class Product {
     )
     private Set<User> savedByUsers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "products") // 'products' is the field in the Transaction class
-    private Set<Transaction> transactions = new HashSet<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<TransactionProduct> transactionProducts;
 
     @ManyToOne
     @JoinColumn(name = "entrepreneur_id", nullable = false)  // Links to EntrepreneurUser
@@ -45,5 +46,16 @@ public class Product {
     @PrePersist
     protected void onCreate() {
         this.postedDate = LocalDateTime.now();
+    }
+
+    public EntrepreneurUser getEntrepreneur() {
+        return entrepreneur;
+    }
+    public List<TransactionProduct> getTransactionProducts() {
+        return transactionProducts;
+    }
+
+    public void setTransactionProducts(List<TransactionProduct> transactionProducts) {
+        this.transactionProducts = transactionProducts;
     }
 }
