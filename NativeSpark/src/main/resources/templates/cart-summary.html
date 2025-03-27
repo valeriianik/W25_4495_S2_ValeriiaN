@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+
+    <title>Checkout - NativeSpark</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .footer-custom {
+            background-color: #014017;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1rem;
+            margin-top: auto;
+        }
+
+        button span {
+            transition: color 0.3s ease;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{navbar}"></div>
+
+
+<div class="container mt-5">
+    <div class="container">
+        <div class="row purchase-container">
+
+            <!-- ✅ Seller Information (Left Side) -->
+            <div class="col-md-4 seller-info">
+                <h4>Seller Information</h4>
+<!--                <p><strong>Name:</strong> <span-->
+<!--                 th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>-->
+
+            </div>
+
+            <!-- ✅ Purchase Form (Right Side) -->
+            <div class="col-md-8 purchase-details">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div th:each="cartItem : ${cartItems}">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${cartItem.getProduct().productName}"></h5>
+                                    <div class="mb-3">
+                                        <strong>Price:</strong>
+                                        <p>$<span th:text="${cartItem.getProduct().price}"></span></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Quantity:</strong>
+                                        <p th:text="${cartItem.quantity}"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Total Price:</strong>
+                                        <p>$<span
+                                                th:text="${cartItem.getProduct().price * cartItem.quantity}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Summary</h5>
+                                <div class="mb-3">
+                                    <strong>Total Quantity:</strong>
+                                    <!--                                        <p th:text="${#numbers.formatDecimal(cartItems.stream().mapToInt(c -> c.quantity).sum(), 0, 'POINT', 0)}"></p>-->
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Total Price:</strong>
+                                    <!--                                        <p>$<span th:text="${cartItems.stream().mapToDouble(c -> c.getProduct().price * c.quantity).sum()}"></span></p>-->
+                                </div>
+                                <div class="text-center">
+                                    <a href="/checkout" class="btn btn-dark-green">Proceed to Checkout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-custom">
+    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
+</footer>
+</body>
+</html>
+
+

@@ -1,6 +1,5 @@
 package org.example.nativespark.controllers;
 
-import org.apache.coyote.Response;
 import org.example.nativespark.entities.Cart;
 import org.example.nativespark.entities.CartItem;
 import org.example.nativespark.entities.Product;
@@ -38,7 +37,6 @@ public class CartController {
 
     @GetMapping("/cart")
     public String cart(Model model, Authentication authentication){
-
         if (authentication == null || !authentication.isAuthenticated()) {
             System.out.println("❌ No authenticated user found, redirecting to login.");
             return "redirect:/login";
@@ -107,5 +105,34 @@ public class CartController {
             cartItemRepository.save(newItem);
             return ResponseEntity.ok("Product added to cart");
         }
-    }}
+    }
 
+    @GetMapping("/cart/checkout")
+    public String checkout(Model model, Authentication authentication){
+        // Check if the user is authenticated
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("❌ No authenticated user found, redirecting to login.");
+            return "redirect:/login";
+        }
+
+        String email = authentication.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()){
+            throw new RuntimeException("No user found for the user");
+        }
+        User user = userOptional.get();
+
+        // Fetch the user's cart (if it doesn't exist, create a new one)
+        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+        if (cartOptional.isEmpty()) {
+            // Handle case where the user doesn't have a cart
+            throw new RuntimeException("No cart found for the user");
+        }
+        Cart cart = cartOptional.get();
+        List<CartItem> cartItems = cart.getCartItems();
+        model.addAttribute("cartItems", cartItems);
+
+        return "cart-summary";
+    }
+
+}

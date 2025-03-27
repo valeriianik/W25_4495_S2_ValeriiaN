@@ -2,6 +2,9 @@ package org.example.nativespark.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cart")
 public class Cart {
@@ -12,6 +15,9 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>(); // Changed to List
 
     public Cart(){}
     public Cart(User user){
@@ -24,5 +30,12 @@ public class Cart {
 
     public Long getId() {
         return id;
+    }
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 }
