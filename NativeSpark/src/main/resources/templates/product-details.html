@@ -269,11 +269,6 @@
             <p><strong>Seller:</strong> <span
                     th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>
 
-            <!-- ✅ Buy Button (Only if Quantity > 0) -->
-            <a th:if="${product.quantity > 0}"
-               th:href="@{/purchase/{id}(id=${product.id})}"
-               class="btn btn-success">Buy</a>
-
 
             <form th:if="${product.quantity > 0}" id="add-to-cart-form" onsubmit="addToCart(event)">
                 <input type="hidden" name="productId" th:value="${product.id}">
