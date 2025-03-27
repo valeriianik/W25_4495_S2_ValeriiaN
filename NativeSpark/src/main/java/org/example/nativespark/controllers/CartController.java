@@ -225,12 +225,12 @@ public class CartController {
         // Save the transaction
         transactionRepository.save(transaction);
 
-        // Clear the cart items after successful transaction
-        cartItems.clear();  // Remove all items from the cart
-        cartRepository.save(cart);  // Save the cart with no items
+        // Remove all items from the cart
+        cartItemRepository.deleteAll(cartItems);
+        cartItems.clear();
+        cartRepository.save(cart);
 
         model.addAttribute("orderNumber", transaction.getId());
-
         return "cart-success";
     }
 }
