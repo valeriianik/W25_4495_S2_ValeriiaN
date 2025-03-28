@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-USER = os.getenv("USER")
+USER = "root"
 HOST = os.getenv("HOST")
 DB = os.getenv("DATABASE")
 PWD = os.getenv("ROOT_PWD")

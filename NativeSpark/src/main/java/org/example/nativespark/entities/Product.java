@@ -34,6 +34,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "entrepreneur_id", nullable = false)  // Links to EntrepreneurUser
     private EntrepreneurUser entrepreneur;
+    // One-to-many relationship with Recommendation
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Recommendation> recommendations;
 
     private String productName;
     private String productDescription;
