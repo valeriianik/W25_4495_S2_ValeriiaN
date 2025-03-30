@@ -167,7 +167,7 @@ def seed_transactions(user_ids, product_ids):
         query = """
             INSERT INTO transactions (city, country, phone_number, postal_code, province,
                                    quantity, status, street_address, total_price, transaction_date,
-                                   buyer_id, product_id, seller_id)
+                                   buyer_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(
@@ -213,7 +213,7 @@ try:
     product_ids = [product[0] for product in products]
 
     # Seed transactions (needs user_ids and product_ids)
-    transactions = seed_transactions(user_ids, product_ids)
+    # transactions = seed_transactions(user_ids, product_ids)
 
     # Commit all changes
     connection.commit()
