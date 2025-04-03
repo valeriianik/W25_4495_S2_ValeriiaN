@@ -42,8 +42,8 @@ public class OrderController {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
 
-//        List<Transaction> sales = transactionRepository.findBySeller(user);
-//        model.addAttribute("sales", sales);
+        List<Transaction> sales = transactionRepository.findByBuyer(user);
+        model.addAttribute("sales", sales);
 
         return "buyers";
     }

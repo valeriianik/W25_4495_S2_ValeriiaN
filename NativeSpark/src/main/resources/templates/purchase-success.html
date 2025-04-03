@@ -25,14 +25,14 @@
             letter-spacing: 1px;
         }
 
-        .footer-custom {
-            background-color: #014017;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 1rem;
-            margin-top: auto;
-        }
+        /*.footer-custom {*/
+        /*    background-color: #014017;*/
+        /*    color: white;*/
+        /*    padding: 20px 0;*/
+        /*    text-align: center;*/
+        /*    font-size: 1rem;*/
+        /*    margin-top: auto;*/
+        /*}*/
 
         .success-container {
             max-width: 500px;
@@ -108,10 +108,12 @@
     </div>
 </div>
 
-<!-- ✅ Footer -->
-<footer class="footer-custom">
-    <p>&copy; 2025 NativeSpark Integration Solutions Corp. All Rights Reserved.</p>
-</footer>
+<!--&lt;!&ndash; ✅ Footer &ndash;&gt;-->
+<!--<footer class="footer-custom">-->
+<!--    <p>&copy; 2025 NativeSpark Integration Solutions Corp. All Rights Reserved.</p>-->
+<!--</footer>-->
+
+<div th:replace="~{footer}"></div>
 
 <script>
     function redirectToHome() {

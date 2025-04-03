@@ -13,13 +13,13 @@
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
         }
-        .footer-custom {
-            background-color: #014017;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 1rem;
-        }
+        /*.footer-custom {*/
+        /*    background-color: #014017;*/
+        /*    color: white;*/
+        /*    padding: 20px 0;*/
+        /*    text-align: center;*/
+        /*    font-size: 1rem;*/
+        /*}*/
 
         .profile-container {
             display: flex;
@@ -173,11 +173,13 @@
     </div>
 </div>
 
-<!-- ✅ Footer -->
+<!--&lt;!&ndash; ✅ Footer &ndash;&gt;-->
 
-<footer class="footer-custom">
-    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
-</footer>
+<!--<footer class="footer-custom">-->
+<!--    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>-->
+<!--</footer>-->
+
+<div th:replace="~{footer}"></div>
 
 
 <script>

@@ -26,14 +26,14 @@
             letter-spacing: 1px;
         }
 
-        .footer-custom {
-            background-color: #014017;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 1rem;
-            margin-top: 20px;
-        }
+        /*.footer-custom {*/
+        /*    background-color: #014017;*/
+        /*    color: white;*/
+        /*    padding: 20px 0;*/
+        /*    text-align: center;*/
+        /*    font-size: 1rem;*/
+        /*    margin-top: 20px;*/
+        /*}*/
 
         .btn-success {
             background-color: #014017;
@@ -132,9 +132,11 @@
     </form>
 </div>
 
-<footer class="footer-custom">
-    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>
-</footer>
+<!--<footer class="footer-custom">-->
+<!--    <p>&copy; 2025 NATIVESPARK INTEGRATION SOLUTIONS CORP. All Rights Reserved.</p>-->
+<!--</footer>-->
+
+<div th:replace="~{footer}"></div>
 
 </body>
 </html>
