@@ -214,6 +214,10 @@ public class CartController {
             double productTotal = product.getPrice() * quantity;
             totalPrice += productTotal;
 
+            // ✅ Set seller from product's entrepreneur (assuming .getUser() returns the actual User)
+            User seller = product.getEntrepreneur().getUser();
+            transaction.setSeller(seller); // 🔥 Set it here
+
             // Create a TransactionProduct and set the properties
             TransactionProduct transactionProduct = new TransactionProduct();
             transactionProduct.setProduct(product);

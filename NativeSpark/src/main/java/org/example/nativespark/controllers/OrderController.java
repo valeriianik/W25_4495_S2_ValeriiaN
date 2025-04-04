@@ -37,14 +37,30 @@ public class OrderController {
         return "my_orders";
     }
 
+//    @GetMapping("/buyers")
+//    public String viewBuyersOfMyProducts(Model model, Authentication authentication) {
+//        String email = authentication.getName();
+//        User user = userRepository.findByEmail(email).orElse(null);
+//
+//        List<Transaction> sales = transactionRepository.findByBuyer(user);
+//        model.addAttribute("sales", sales);
+//
+//        return "buyers";
+//    }
+
     @GetMapping("/buyers")
     public String viewBuyersOfMyProducts(Model model, Authentication authentication) {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
 
-        List<Transaction> sales = transactionRepository.findByBuyer(user);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Transaction> sales = transactionRepository.findBySeller(user);  // ✅ correct lookup
         model.addAttribute("sales", sales);
 
         return "buyers";
     }
+
 }
