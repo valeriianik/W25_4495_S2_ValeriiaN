@@ -1,12 +1,15 @@
 package org.example.nativespark.controllers;
 
 import org.example.nativespark.entities.CustomProductRequest;
+import org.example.nativespark.entities.EntrepreneurUser;
 import org.example.nativespark.entities.Product;
 import org.example.nativespark.entities.User;
 import org.example.nativespark.repositories.CustomProductRequestRepository;
+import org.example.nativespark.repositories.EntrepreneurUserRepository;
 import org.example.nativespark.repositories.ProductRepository;
 import org.example.nativespark.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +25,17 @@ public class CustomProductRequestController {
     private final ProductRepository productRepository;
     private final CustomProductRequestRepository customProductRequestRepository;
     private final UserRepository userRepository;
+    private final EntrepreneurUserRepository entrepreneurUserRepository;
 
     @Autowired
     public CustomProductRequestController(ProductRepository productRepository,
                                           CustomProductRequestRepository customProductRequestRepository,
-                                          UserRepository userRepository) {
+                                          UserRepository userRepository,
+                                          EntrepreneurUserRepository entrepreneurUserRepository) {
         this.productRepository = productRepository;
         this.customProductRequestRepository = customProductRequestRepository;
         this.userRepository = userRepository;
+        this.entrepreneurUserRepository = entrepreneurUserRepository;
     }
 
     @GetMapping("/{id}")
@@ -66,5 +72,18 @@ public class CustomProductRequestController {
         model.addAttribute("customRequests", customRequests);
         return "my_requests";
     }
+
+    @GetMapping("/requests")
+    @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+    public String viewRequestsForMyProducts(Model model, Authentication authentication) {
+        User entrepreneurUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        EntrepreneurUser entrepreneur = entrepreneurUserRepository.findByUser(entrepreneurUser).orElseThrow();
+
+        List<CustomProductRequest> allRequests = customProductRequestRepository.findAllByProduct_Entrepreneur(entrepreneur);
+        model.addAttribute("requests", allRequests);
+
+        return "requests"; // ✅ This must match the name of your Thymeleaf template (requests.html)
+    }
+
 }
 
