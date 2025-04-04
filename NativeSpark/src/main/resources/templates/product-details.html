@@ -87,6 +87,12 @@
 
             <!-- ✅ Show "Coming Soon" Message (If Quantity is 0) -->
             <p class="text-danger fw-bold" th:if="${product.quantity == 0}">Coming Soon...</p>
+            <div th:if="${product.quantity == 0}">
+                <a class="btn btn-warning" th:href="@{/request-custom/{id}(id=${product.id})}">
+                    Request Custom Amount
+                </a>
+            </div>
+
 
             <div class="toast align-items-center text-bg-primary border-0" id="toast">
                 <div class="d-flex">
