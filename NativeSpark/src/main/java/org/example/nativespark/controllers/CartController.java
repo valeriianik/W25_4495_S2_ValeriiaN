@@ -214,6 +214,10 @@ public class CartController {
             double productTotal = product.getPrice() * quantity;
             totalPrice += productTotal;
 
+            // ✅ Update stock quantity
+            product.setQuantity(product.getQuantity() - quantity);
+            productRepository.save(product); // ✅ Save updated product
+
             // ✅ Set seller from product's entrepreneur (assuming .getUser() returns the actual User)
             User seller = product.getEntrepreneur().getUser();
             transaction.setSeller(seller); // 🔥 Set it here
