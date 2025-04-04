@@ -19,65 +19,88 @@
             transition: color 0.3s ease;
             font-size: 1.5rem;
         }
+
+        .seller-info .card {
+            background-color: #e8f5e9; /* light green background */
+            border-left: 5px solid #3cae6d;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-body p {
+            margin-bottom: 0.5rem;
+        }
+
+        body {
+            background-color: #f8f9fb;
+        }
+
+        h3 {
+            color: #014017;
+        }
+
+
     </style>
 </head>
 <body>
 
 <div th:replace="~{navbar}"></div>
 
-
+<main class="flex-grow-1">
 <div class="container mt-5">
     <div class="container">
         <div class="row purchase-container">
 
-            <!-- ✅ Seller Information (Left Side) -->
-            <div class="col-md-4 seller-info">
-                <h4>Seller Information</h4>
-                <!--                <p><strong>Name:</strong> <span-->
-                <!--                 th:text="${product.entrepreneur.firstName + ' ' + product.entrepreneur.lastName}"></span></p>-->
-
-            </div>
-
-            <!-- ✅ Purchase Form (Right Side) -->
-            <div class="col-md-8 purchase-details">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div th:each="cartItem : ${cartItems}">
-                            <div class="card mb-3">
+            <!-- ✅ Seller and Product Cards -->
+            <div class="container-fluid px-lg-5">
+                <div class="row g-4">
+                    <div th:each="cartItem, iterStat : ${cartItems}" class="row mb-4 align-items-stretch">
+                        <!-- Seller Info -->
+                        <div class="col-md-6 col-lg-4">
+                            <h3 class="mb-4 fw-bold">Seller Info</h3>
+                            <div class="card h-100 shadow-sm border-start border-success border-3">
                                 <div class="card-body">
-                                    <h5 class="card-title" th:text="${cartItem.getProduct().productName}"></h5>
-                                    <div class="mb-3">
-                                        <strong>Price:</strong>
-                                        <p>$<span th:text="${cartItem.getProduct().price}"></span></p>
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Quantity:</strong>
-                                        <p th:text="${cartItem.quantity}"></p>
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Total Price:</strong>
-                                        <p>$
-                                            <span th:text="${#numbers.formatCurrency(cartItem.getProduct().price * cartItem.quantity)}"/>
-                                        </p>
-                                    </div>
+                                    <p><strong>Name:</strong>
+                                        <span th:text="${cartItem.product.entrepreneur.firstName + ' ' + cartItem.product.entrepreneur.lastName}"></span>
+                                    </p>
+                                    <p><strong>Email:</strong>
+                                        <span th:text="${cartItem.product.entrepreneur.user.email}"></span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Summary</h5>
-                                <div class="mb-3">
-                                    <strong>Total Items:</strong>
-                                    <p th:text="${totalQuantity}"></p>
+
+                        <!-- Product Info -->
+                        <div class="col-md-6 col-lg-4">
+                            <h3 class="mb-4 fw-bold">Product Info</h3>
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${cartItem.getProduct().productName}"></h5>
+                                    <p><strong>Price:</strong> $<span th:text="${cartItem.getProduct().price}"></span></p>
+                                    <p><strong>Quantity:</strong> <span th:text="${cartItem.quantity}"></span></p>
+                                    <p><strong>Total:</strong> $<span th:text="${#numbers.formatDecimal(cartItem.getProduct().price * cartItem.quantity, 1, 2)}"></span></p>
                                 </div>
-                                <div class="mb-3">
-                                    <strong>Total Price:</strong>
-                                    <p>$<span th:text="${totalPrice}"></span></p>
-                                </div>
-                                <div class="text-center">
-                                    <a class="btn btn-dark-green" th:href="@{/cart/checkout}">Proceed to Checkout</a>
+                            </div>
+                        </div>
+
+                        <!-- Summary (only once) -->
+                        <div class="col-md-12 col-lg-4" th:if="${iterStat.index == 0}">
+                            <h3 class="mb-4 fw-bold">Summary</h3>
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Summary</h5>
+                                    <p><strong>Total Items:</strong> <span th:text="${totalQuantity}"></span></p>
+                                    <p><strong>Total Price:</strong> $<span th:text="${totalPrice}"></span></p>
+                                    <div class="text-center mt-3">
+                                        <a class="btn btn-secondary w-100" th:href="@{/cart/checkout}">Proceed to Checkout</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -87,6 +110,8 @@
         </div>
     </div>
 </div>
+
+</main>
 
 <div th:replace="~{footer}"></div>
 
