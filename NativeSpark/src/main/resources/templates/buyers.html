@@ -17,25 +17,14 @@
 
 <div th:replace="~{navbar}"></div>
 
+<main class="flex-grow-1">
+
 <div class="container mt-5">
     <h2 class="text-center">People Who Bought My Products</h2>
     <hr>
     <div th:if="${sales.isEmpty()}">
         <p class="text-muted text-center">No one has purchased your products yet.</p>
     </div>
-<!--    <div th:each="sale : ${sales}" class="card mb-3">-->
-<!--        <div class="card-body">-->
-<!--            <h5 th:text="${sale.product.productName}"></h5>-->
-<!--            <p><strong>Quantity:</strong> <span th:text="${sale.quantity}"></span></p>-->
-<!--            <p><strong>Total Price:</strong> $<span th:text="${sale.totalPrice}"></span></p>-->
-<!--            <p><strong>Buyer Email:</strong> <span th:text="${sale.buyer.email}"></span></p>-->
-<!--            <p><strong>Phone:</strong> <span th:text="${sale.phoneNumber}"></span></p>-->
-<!--            <p><strong>Shipping Address:</strong>-->
-<!--                <span th:text="${sale.streetAddress} + ', ' + sale.city + ', ' + sale.province + ', ' + sale.country + ', ' + sale.postalCode"></span>-->
-<!--            </p>-->
-<!--            <p><strong>Date:</strong> <span th:text="${#temporals.format(sale.transactionDate, 'yyyy-MM-dd HH:mm')}"></span></p>-->
-<!--        </div>-->
-<!--    </div>-->
     <div th:each="sale : ${sales}" class="card mb-3">
         <div class="card-body">
             <div th:each="product : ${sale.transactionProducts}">
@@ -54,6 +43,8 @@
     </div>
 
 </div>
+
+</main>
 
 <div th:replace="~{footer}"></div>
 
