@@ -1,10 +1,98 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" >-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
+
+<!--    <title>Cart - NativeSpark</title>-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            min-height: 100vh;-->
+<!--            font-family: 'Arial', sans-serif;-->
+<!--            background-color: #f4f4f9;-->
+<!--        }-->
+<!--        button span {-->
+<!--            transition: color 0.3s ease;-->
+<!--            font-size: 1.5rem;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash;Navbar&ndash;&gt;-->
+<!--<div th:replace="~{navbar}"></div>-->
+
+<!--&lt;!&ndash;Cart content&ndash;&gt;-->
+<!--<div class="container mt-5">-->
+<!--    <h2 class="text-center">Marketplace</h2>-->
+<!--    <div th:if="${cartItems != null and !cartItems.isEmpty()}">-->
+<!--        <table class="table table-striped table-bordered">-->
+<!--            <thead class="table-dark">-->
+<!--            <tr>-->
+<!--                <th>Product Name</th>-->
+<!--                <th>Product Description</th>-->
+<!--                <th>Product Price</th>-->
+<!--                <th>Quantity</th>-->
+<!--                <th>Total</th>-->
+<!--                <th>Actions</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="cartItem : ${cartItems}">-->
+<!--                <td th:text="${cartItem.product.productName}">Product Name</td>-->
+<!--                <td th:text="${cartItem.product.productDescription}">Product Description</td>-->
+<!--                <td>-->
+<!--                    <span th:text="${cartItem.product.price}">$Price</span>-->
+<!--                </td>-->
+
+<!--                &lt;!&ndash; Quantity Input Form &ndash;&gt;-->
+<!--                <td>-->
+<!--                    <form th:action="@{/cart/updateQuantity}" method="post" class="d-flex flex-column">-->
+<!--                        <input type="hidden" name="cartItemId" th:value="${cartItem.id}">-->
+<!--                        <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1" class="form-control mb-2">-->
+<!--                        <button type="submit" class="btn btn-primary btn-sm">Update Quantity</button>-->
+<!--                    </form>-->
+<!--                </td>-->
+
+<!--                &lt;!&ndash; Total Price &ndash;&gt;-->
+<!--                <td>-->
+<!--                    <span th:text="${cartItem.product.price * cartItem.quantity}">Total</span>-->
+<!--                </td>-->
+
+<!--                &lt;!&ndash; Remove Item Form &ndash;&gt;-->
+<!--                <td>-->
+<!--                    <form th:action="@{/cart/removeItem}" method="post">-->
+<!--                        <input type="hidden" name="cartItemId" th:value="${cartItem.id}">-->
+<!--                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>-->
+<!--                    </form>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--        <div>-->
+<!--            <a class="button" th:href="@{/cart/summary}">Checkout</a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div th:if="${cartItems == null or cartItems.isEmpty()}">-->
+<!--        <p>Your cart is empty.</p>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div th:replace="~{footer}"></div>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="_csrf" th:content="${_csrf.token}"/>
-
     <title>Cart - NativeSpark</title>
 
     <style>
@@ -15,9 +103,67 @@
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
         }
-        button span {
-            transition: color 0.3s ease;
-            font-size: 1.5rem;
+
+        h2 {
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        .table thead th {
+            background-color: #177440; /* lighter green */
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .btn-update {
+            background-color: #014017;
+            color: white;
+            border: none;
+        }
+
+        .btn-update:hover {
+            background-color: #02371e;
+        }
+
+        .btn-danger {
+            font-weight: bold;
+        }
+
+        .checkout-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-checkout {
+            background-color: #6c757d; /* Bootstrap gray */
+            color: white;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: none;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-checkout:hover {
+            background-color: #5a6268;
+            text-decoration: none;
+            color: white;
+        }
+
+        .form-control {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
         }
     </style>
 </head>
@@ -27,14 +173,15 @@
 
 <!--Cart content-->
 <div class="container mt-5">
-    <h2 class="text-center">Marketplace</h2>
+    <h2 class="text-center">Your Cart</h2>
+
     <div th:if="${cartItems != null and !cartItems.isEmpty()}">
         <table class="table table-striped table-bordered">
-            <thead class="table-dark">
+            <thead>
             <tr>
                 <th>Product Name</th>
-                <th>Product Description</th>
-                <th>Product Price</th>
+                <th>Description</th>
+                <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
                 <th>Actions</th>
@@ -44,16 +191,14 @@
             <tr th:each="cartItem : ${cartItems}">
                 <td th:text="${cartItem.product.productName}">Product Name</td>
                 <td th:text="${cartItem.product.productDescription}">Product Description</td>
-                <td>
-                    <span th:text="${cartItem.product.price}">$Price</span>
-                </td>
+                <td><span th:text="${cartItem.product.price}">$Price</span></td>
 
-                <!-- Quantity Input Form -->
+                <!-- Quantity Form -->
                 <td>
-                    <form th:action="@{/cart/updateQuantity}" method="post" class="d-flex flex-column">
+                    <form th:action="@{/cart/updateQuantity}" method="post" class="d-flex flex-column align-items-center">
                         <input type="hidden" name="cartItemId" th:value="${cartItem.id}">
-                        <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1" class="form-control mb-2">
-                        <button type="submit" class="btn btn-primary btn-sm">Update Quantity</button>
+                        <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1" class="form-control mb-2" style="width: 80px;">
+                        <button type="submit" class="btn btn-update btn-sm">Update</button>
                     </form>
                 </td>
 
@@ -62,7 +207,7 @@
                     <span th:text="${cartItem.product.price * cartItem.quantity}">Total</span>
                 </td>
 
-                <!-- Remove Item Form -->
+                <!-- Remove Button -->
                 <td>
                     <form th:action="@{/cart/removeItem}" method="post">
                         <input type="hidden" name="cartItemId" th:value="${cartItem.id}">
@@ -72,18 +217,21 @@
             </tr>
             </tbody>
         </table>
-        <div>
-            <a class="button" th:href="@{/cart/summary}">Checkout</a>
+
+        <!-- Checkout Button Centered -->
+        <div class="checkout-container">
+            <a class="btn-checkout" th:href="@{/cart/summary}">Proceed to Checkout</a>
         </div>
     </div>
 
-    <div th:if="${cartItems == null or cartItems.isEmpty()}">
-        <p>Your cart is empty.</p>
+    <!-- Empty Cart Message -->
+    <div th:if="${cartItems == null or cartItems.isEmpty()}" class="text-center mt-5">
+        <p class="text-muted fs-5">Your cart is empty.</p>
     </div>
 </div>
 
+<!--Footer-->
 <div th:replace="~{footer}"></div>
-
 </body>
 </html>
 
