@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Requests</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+    }
+
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 1rem;
+    }
+
+    h2 {
+      color: #014017;
+    }
+  </style>
+</head>
+<body>
+
+<div th:replace="~{navbar}"></div>
+
+<main class="flex-grow-1">
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">My Custom Requests</h2>
+
+    <div th:if="${customRequests.isEmpty()}">
+      <p class="text-muted text-center">You haven’t made any custom requests yet.</p>
+    </div>
+
+    <div th:each="request : ${customRequests}" class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title" th:text="${request.product.productName}"></h5>
+
+        <p class="card-text"><strong>Requested Amount:</strong>
+          <span th:text="${request.requestedAmount}"></span></p>
+
+        <p class="card-text"><strong>Seller:</strong>
+          <span th:text="${request.product.entrepreneur.firstName + ' ' + request.product.entrepreneur.lastName}"></span>
+          (<span th:text="${request.product.entrepreneur.user.email}"></span>)
+        </p>
+
+        <p class="card-text"><strong>Date of Request:</strong>
+          <span th:text="${#temporals.format(request.requestedAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
+</body>
+</html>
+

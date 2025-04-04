@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/request-custom")
@@ -55,6 +57,14 @@ public class CustomProductRequestController {
         customProductRequestRepository.save(request);
 
         return "redirect:/request-custom/" + id + "?success=true";
+    }
+
+    @GetMapping("/my_requests")
+    public String viewMyCustomRequests(Model model, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        List<CustomProductRequest> customRequests = customProductRequestRepository.findByUser(user);
+        model.addAttribute("customRequests", customRequests);
+        return "my_requests";
     }
 }
 
