@@ -108,20 +108,21 @@
         </div>
     </div>
     <h2>Recommendations</h2>
-    <div class="d-flex flex-wrap">
-        <div class="d-flex flex-row flex-wrap" th:each="rec: ${product.getRecommendations()}">
-            <div class="d-flex card" style="width: 18rem;">
+    <div class="d-flex flex-wrap gap-4">
+        <div th:each="rec : ${product.getRecommendations()}">
+            <div class="card" style="width: 18rem;">
                 <img alt="Product Image" class="card-img-top" th:src="@{${rec.getRecommendedProduct().imagePath}}">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${rec.getRecommendedProduct().productName}"></h5>
-                    <p class="card-text"
-                       th:text="${rec.getRecommendedProduct().category}"></p>
-                    <a class="btn btn-primary"
-                       th:href="@{/product-postings/{id}(id=${rec.getRecommendedProduct().id})}">View Product</a>
+                    <p class="card-text" th:text="${rec.getRecommendedProduct().category}"></p>
+                    <a class="btn btn-primary" th:href="@{/product-postings/{id}(id=${rec.getRecommendedProduct().id})}">
+                        View Product
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <div th:replace="~{footer}"></div>

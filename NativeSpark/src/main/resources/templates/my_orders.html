@@ -32,13 +32,14 @@
             <p class="card-text"><strong>Total Price:</strong>
                 <span th:text="${#numbers.formatCurrency(item.price * item.quantity)}" />
             <p class="card-text"><strong>Seller:</strong> <span th:text="${item.getProduct().getEntrepreneur().getUser().getEmail()}"></span></p>
-        </div></div>
-        <p class="card-text"><strong>Phone Number:</strong> <span th:text="${order.phoneNumber}"></span></p>
-        <p class="card-text"><strong>Status:</strong> <span th:text="${order.status}"></span></p>
-        <p class="card-text"><strong>Shipping Address:</strong>
-            <span th:text="${order.streetAddress + ', ' + order.city + ', ' + order.province + ', ' + order.country + ', ' + order.postalCode}"></span>
-        </p>
-        <p class="card-text"><strong>Date:</strong> <span th:text="${#temporals.format(order.transactionDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+            <p class="card-text"><strong>Phone Number:</strong> <span th:text="${order.phoneNumber}"></span></p>
+            <p class="card-text"><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+            <p class="card-text"><strong>Shipping Address:</strong>
+                <span th:text="${order.streetAddress + ', ' + order.city + ', ' + order.province + ', ' + order.country + ', ' + order.postalCode}"></span>
+            </p>
+            <p class="card-text"><strong>Date:</strong> <span th:text="${#temporals.format(order.transactionDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        </div>
+        </div>
     </div>
 </div>
 
