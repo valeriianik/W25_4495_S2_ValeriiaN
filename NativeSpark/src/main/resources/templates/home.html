@@ -64,6 +64,11 @@
         <button class="btn btn-outline-primary" onclick="showSection('projects', this)">Projects</button>
     </div>
 
+    <form th:action="@{/}" method="get" class="d-flex mb-4">
+        <input class="form-control me-2" type="text" name="keyword" placeholder="Search products...">
+        <button class="btn btn-dark-green" type="submit">Search</button>
+    </form>
+
     <!-- ✅ Always Show Products -->
     <div id="productsSection">
         <h3 class="mt-4">Products</h3>
