@@ -64,10 +64,16 @@
         <button class="btn btn-outline-primary" onclick="showSection('projects', this)">Projects</button>
     </div>
 
-    <form th:action="@{/}" method="get" class="d-flex mb-4">
-        <input class="form-control me-2" type="text" name="keyword" placeholder="Search products...">
+<!--    <form th:action="@{/}" method="get" class="d-flex mb-4">-->
+<!--        <input class="form-control me-2" type="text" name="keyword" placeholder="Search products...">-->
+<!--        <button class="btn btn-dark-green" type="submit">Search</button>-->
+<!--    </form>-->
+
+    <form class="input-group mb-4" method="get" th:action="@{/}">
+        <input type="text" class="form-control" name="keyword" placeholder="Search jobs, projects, or products..." th:value="${param.keyword}">
         <button class="btn btn-dark-green" type="submit">Search</button>
     </form>
+
 
     <!-- ✅ Always Show Products -->
     <div id="productsSection">

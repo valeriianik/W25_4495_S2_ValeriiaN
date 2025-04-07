@@ -10,4 +10,5 @@ import java.util.List;
 public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
     List<JobPosting> findByBusiness(BusinessUser business);
     List<JobPosting> findAllBySavedByUsersContaining(User user);
+    List<JobPosting> findByJobDescriptionContainingIgnoreCaseOrRequiredSkillsContainingIgnoreCase(String desc, String skills);
 }

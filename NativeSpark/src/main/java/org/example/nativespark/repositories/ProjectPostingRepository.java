@@ -10,5 +10,5 @@ import java.util.List;
 public interface ProjectPostingRepository extends JpaRepository<ProjectPosting, Long> {
     List<ProjectPosting> findByBusiness(BusinessUser business);
     List<ProjectPosting> findAllBySavedByUsersContaining(User user);
-
+    List<ProjectPosting> findByProjectDescriptionContainingIgnoreCaseOrRequiredSkillsContainingIgnoreCase(String desc, String skills);
 }
