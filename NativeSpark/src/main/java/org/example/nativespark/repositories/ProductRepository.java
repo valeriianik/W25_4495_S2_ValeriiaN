@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByEntrepreneur(EntrepreneurUser entrepreneur);
     List<Product> findAllBySavedByUsersContaining(User user);
+    List<Product> findByProductNameContainingIgnoreCaseOrProductDescriptionContainingIgnoreCase(String nameKeyword, String descKeyword);
 }
