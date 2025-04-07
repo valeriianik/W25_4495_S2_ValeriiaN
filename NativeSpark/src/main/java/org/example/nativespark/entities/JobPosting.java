@@ -34,7 +34,7 @@ public class JobPosting {
     private String jobTitle;
     private String jobDescription;
     private String location;
-    private String employmentType; // Full-time, Part-time, Contract
+    private String employmentType;
     private Double salary;
     private String requiredExperience;
     private String requiredSkills;

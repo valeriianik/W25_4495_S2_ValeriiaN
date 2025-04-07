@@ -64,16 +64,10 @@
         <button class="btn btn-outline-primary" onclick="showSection('projects', this)">Projects</button>
     </div>
 
-<!--    <form th:action="@{/}" method="get" class="d-flex mb-4">-->
-<!--        <input class="form-control me-2" type="text" name="keyword" placeholder="Search products...">-->
-<!--        <button class="btn btn-dark-green" type="submit">Search</button>-->
-<!--    </form>-->
-
     <form class="input-group mb-4" method="get" th:action="@{/}">
         <input type="text" class="form-control" name="keyword" placeholder="Search jobs, projects, or products..." th:value="${param.keyword}">
         <button class="btn btn-dark-green" type="submit">Search</button>
     </form>
-
 
     <!-- ✅ Always Show Products -->
     <div id="productsSection">
@@ -81,6 +75,24 @@
         <div th:if="${products.isEmpty()}">
             <p class="text-muted text-center">No products available at the moment.</p>
         </div>
+
+        <form class="row mb-4" method="get" th:action="@{/}">
+
+            <div class="col-md-3 mb-2">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    <option th:each="cat : ${allCategories}"
+                            th:value="${cat}"
+                            th:text="${cat}"
+                            th:selected="${cat == selectedCategory}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 mb-2">
+                <button class="btn btn-dark-green w-100" type="submit">Filter</button>
+            </div>
+        </form>
 
         <div th:each="product : ${products}"
              th:if="${loggedInUserId == null or product.entrepreneur.user.userId != loggedInUserId}"
@@ -113,8 +125,6 @@
 
     </div>
 
-
-
     <!-- ✅ Show Jobs & Projects for Entrepreneurs Only -->
     <div sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
         <!-- ✅ Jobs Section (Initially Hidden) -->
@@ -123,6 +133,22 @@
             <div th:if="${jobPostings.isEmpty()}">
                 <p class="text-muted text-center">No job postings available.</p>
             </div>
+
+            <form class="row mb-4" method="get" th:action="@{/}">
+
+                <div class="col-md-3 mb-2" sec:authorize="hasAuthority('ROLE_ENTREPRENEUR')">
+                    <select name="employmentType" class="form-select">
+                        <option value="">All Job Types</option>
+                        <option value="Full-time" th:selected="${selectedEmploymentType == 'Full-time'}">Full-time</option>
+                        <option value="Part-time" th:selected="${selectedEmploymentType == 'Part-time'}">Part-time</option>
+                        <option value="Internship" th:selected="${selectedEmploymentType == 'Internship'}">Internship</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <button class="btn btn-dark-green w-100" type="submit">Filter</button>
+                </div>
+            </form>
 
             <div th:each="job : ${jobPostings}" class="listing-card">
                 <span sec:authorize="isAuthenticated()">
